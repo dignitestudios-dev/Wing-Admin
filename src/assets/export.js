@@ -5,7 +5,7 @@
 // import FILENAME(PASCALCASE) from "./FILENAME(CAMELCASE).png";
 import Logo from "./logo.png";
 import NoInternetImage from "./nointernet.png";
-import Gradient from "./gradient.png";
+import Gradient from "./Gradient.png";
 import LoginImage from "./loginimage.png";
 import Black from "./black.png";
 import Pill from "./pill.png";

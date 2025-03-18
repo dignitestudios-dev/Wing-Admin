@@ -8,7 +8,7 @@ import NoInternetImage from "./nointernet.png";
 import Gradient from "./Gradient.png";
 import LoginImage from "./loginimage.png";
 import Black from "./black.png";
-import Pill from "./pill.png";
+import Pill from "./Pill.png";
 import AuthMockup from "./authentication-mockup.png";
 import ChangePasswordMockup from "./change-password-mockup.png";
 import VerifyOtpImg from './verifyotp.png';

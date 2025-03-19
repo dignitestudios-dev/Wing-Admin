@@ -39,8 +39,7 @@ const ForgotPassword = () => {
               Forgot Password
             </h1>
             <p className="w-[90%] font-normal text-[16px] text-black leading-[21.6px] tracking-[-1.2px]">
-              Enter your email to reset your password and swiftly resume your
-              experience.
+              You can get them back easily.
             </p>
           </div>
 

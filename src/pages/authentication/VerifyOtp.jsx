@@ -36,9 +36,11 @@ const VerifyOtp = () => {
         </button>
 
         <div className="w-full flex justify-start items-start flex-col">
-          <h1 className="text-[36px] font-bold text-black ">Verification</h1>
+          <h1 className="text-[36px] font-bold text-black ">
+            It's just OTP verification
+          </h1>
           <p className="font-normal text-[16px] text-[#868686] ">
-            Enter verification code sent to your email
+            You are one step away from recovering your password.{" "}
           </p>
         </div>
 

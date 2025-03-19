@@ -3,7 +3,6 @@ import ForgotPassword from "../pages/authentication/ForgotPassword";
 import VerifyOtp from "../pages/authentication/VerifyOtp";
 import ResetPassword from "./../pages/authentication/ResetPassword";
 import Login from "../pages/authentication/Login";
-import AuthLayout from "../layouts/AuthLayout";
 
 export const AuthenticationRoutes = [
   {

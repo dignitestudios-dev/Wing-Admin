@@ -45,9 +45,9 @@ const ForgotPassword = () => {
 
           <div className="w-full h-auto flex flex-col justify-start items-start gap-4">
             <AuthInput
-              text={"Email Address"}
-              placeholder={"Type your email here"}
-              type={"text"}
+              text={"Phone"}
+              placeholder={"enter phone number  here"}
+              type={"number"}
             />
           </div>
 

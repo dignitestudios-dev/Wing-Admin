@@ -10,7 +10,7 @@ const Login = () => {
   return (
     <div className="flex w-full h-screen overflow-hidden bg-gradient-to-b from-[#24638F] to-[#051724] ">
       <form
-        onSubmit={() => navigate("/app/dashboard", "Home")}
+        onSubmit={() => navigate("/auth/verify-otp")}
         className="w-full lg:w-1/2 h-full bg-white p-8 lg:p-20 flex flex-col justify-start items-start gap-8"
       >
         <div className="flex justify-left items-left mr-14 w-full ">
@@ -22,17 +22,16 @@ const Login = () => {
         </div>
 
         <h1 className="text-left text-4xl font-bold text-black ml-8">Log in</h1>
-
-        <p className="text-[14px] text-[#868686] ml-8">
-          Enter details below to log in
-        </p>
+        <span className="text-[14px] text-[#868686] ml-8 -mt-6">
+          Enter your phone number below to log in
+        </span>
         <div className="flex flex-col w-full h-auto justify-start items-start gap-4 ml-8 ">
           <AuthInput
-            text={"Email"}
-            placeholder={"Type your email address here"}
-            type={"text"}
+            text={"Phone"}
+            placeholder={"Enter phone number here"}
+            type={"number"}
           />
-          <div className="flex flex-col w-full lg:w-[434px] justify-start items-end gap-1">
+          {/* <div className="flex flex-col w-full lg:w-[434px] justify-start items-end gap-1">
             <AuthInput
               text={"Password"}
               placeholder={"Enter Password"}
@@ -45,10 +44,10 @@ const Login = () => {
             >
               Forgot Password?
             </button>
-          </div>
+          </div> */}
         </div>
         <div className="ml-8">
-          <AuthSubmitBtn text={"Log in"} />
+          <AuthSubmitBtn text={"Next"} />
         </div>
       </form>
 

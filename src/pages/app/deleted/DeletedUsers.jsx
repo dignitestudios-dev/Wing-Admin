@@ -8,7 +8,7 @@ const DeletedUsers = () => {
   const reasons = [
     {
       fullName: "John Doe",
-      email: "john.doe@example.com",
+      email: "123456789",
       reason: "Account was inactive for 6 months",
       status: "Deleted", // Add status
       updatedAt: "2025-03-01T12:00:00Z",
@@ -16,7 +16,7 @@ const DeletedUsers = () => {
     },
     {
       fullName: "Jane Smith",
-      email: "jane.smith@example.com",
+      email: "123456789",
       reason: "Policy violation",
       status: "Deactivated", // Add status
       updatedAt: "2025-02-28T08:30:00Z",

@@ -22,7 +22,7 @@ const Users = () => {
       fullName: "John Doe",
       age: 30,
       gender: "Male",
-      email: "johndoe@gmail.com",
+      email: "123456789",
 
       createdAt: "2025-01-10",
       state: "California",
@@ -37,7 +37,7 @@ const Users = () => {
       fullName: "Jane Smith",
       age: 28,
       gender: "Female",
-      email: "johndoe@gmail.com",
+      email: "123456789",
 
       createdAt: "2024-11-20",
       state: "Texas",

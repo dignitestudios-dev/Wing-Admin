@@ -13,24 +13,24 @@ const Matches = () => {
       user: {
         profilePicture: "https://randomuser.me/api/portraits/men/1.jpg",
         fullName: "John Doe",
-        email: "john.doe@example.com",
+        email: "123456789",
       },
       otherUser: {
         profilePicture: "https://randomuser.me/api/portraits/women/1.jpg",
         fullName: "Jane Smith",
-        email: "jane.smith@example.com",
+        email: "123456789",
       },
     },
     {
       user: {
         profilePicture: "https://randomuser.me/api/portraits/men/2.jpg",
         fullName: "Mike Johnson",
-        email: "mike.johnson@example.com",
+        email: "123456789",
       },
       otherUser: {
         profilePicture: "https://randomuser.me/api/portraits/women/2.jpg",
         fullName: "Alice Brown",
-        email: "alice.brown@example.com",
+        email: "123456789",
       },
     },
     // Add more static data as needed

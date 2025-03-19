@@ -14,12 +14,12 @@ const Reports = () => {
     {
       user: {
         fullName: "John Doe",
-        email: "john.doe@example.com",
+        email: "123456789",
         profilePicture: "https://randomuser.me/api/portraits/men/1.jpg",
       },
       reportedUser: {
         fullName: "Jane Smith",
-        email: "jane.smith@example.com",
+        email: "123456789",
         profilePicture: "https://randomuser.me/api/portraits/women/1.jpg",
         isBlocked: false,
       },
@@ -30,12 +30,12 @@ const Reports = () => {
     {
       user: {
         fullName: "Alice Johnson",
-        email: "alice.johnson@example.com",
+        email: "123456789",
         profilePicture: "https://randomuser.me/api/portraits/women/2.jpg",
       },
       reportedUser: {
         fullName: "Mark Lee",
-        email: "mark.lee@example.com",
+        email: "123456789",
         profilePicture: "https://randomuser.me/api/portraits/men/2.jpg",
         isBlocked: true,
       },

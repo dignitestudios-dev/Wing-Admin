@@ -54,11 +54,11 @@ export const sidebarData = [
     icon: <IoLocationOutline />,
     link: "/app/location",
   },
-  {
-    title: "Update Password",
-    icon: <MdLockOpen />,
-    link: "/app/updatepassword",
-  },
+  // {
+  //   title: "Update Password",
+  //   icon: <MdLockOpen />,
+  //   link: "/app/updatepassword",
+  // },
 
   {
     title: "Logout",

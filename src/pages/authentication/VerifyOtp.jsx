@@ -18,7 +18,7 @@ const VerifyOtp = () => {
   return (
     <div className="w-screen h-screen flex items-start justify-start bg-gradient-to-b from-[#24638F] to-[#051724] ">
       <form
-        onSubmit={() => navigate("/auth/reset-password")}
+        onSubmit={() => navigate("/app/dashboard")}
         className="w-full lg:w-1/2 h-full bg-white px-4 py-8 lg:p-20 z-10 flex flex-col overflow-y-auto justify-start items-center gap-8"
       >
         <div className="flex justify-left items-left mr-10 w-full ">
@@ -28,19 +28,19 @@ const VerifyOtp = () => {
             className="h-[124px] W-[124px] hidden lg:block"
           />
         </div>
-        <button
+        {/* <button
           onClick={() => navigate(-1)}
           className="w-full flex justify-start items-start flex-col"
         >
           <BiArrowBack className="text-3xl text-black" />
-        </button>
+        </button> */}
 
         <div className="w-full flex justify-start items-start flex-col">
           <h1 className="text-[36px] font-bold text-black ">
-            It's just OTP verification
+            OTP Verification
           </h1>
           <p className="font-normal text-[16px] text-[#868686] ">
-            You are one step away from recovering your password.{" "}
+            You are one step away from logging in{" "}
           </p>
         </div>
 
@@ -64,7 +64,7 @@ const VerifyOtp = () => {
             </button>
           </div>
         </div>
-        <AuthSubmitBtn text={"Next"} />
+        <AuthSubmitBtn text={"Log In"} />
       </form>
 
       <div className="hidden lg:flex flex-col justify-center items-center w-1/2 h-full relative">

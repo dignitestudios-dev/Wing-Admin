@@ -9,6 +9,8 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useDashboardData } from "../../../hooks/api/Get";
+import SkeletonLoader from "../../global/SkeletonLoader";
 
 // Register the required Chart.js components
 ChartJS.register(
@@ -21,7 +23,19 @@ ChartJS.register(
 );
 
 const MonthlyUsersChart = () => {
-  // Data for the chart
+  const { loading, data } = useDashboardData();
+
+  if (loading) {
+    return <SkeletonLoader />;
+  }
+
+  if (!data) {
+    return <div>No data available</div>;
+  }
+
+  const monthlyUsersData = data?.userGraph || [];
+
+  // Extract userCount values for chart data
   const chartData = {
     labels: [
       "Jan",
@@ -40,33 +54,23 @@ const MonthlyUsersChart = () => {
     datasets: [
       {
         label: "New Users",
-        data: [200, 100, 400, 520, 180, 390, 450, 220, 560, 0, 0, 0],
-        backgroundColor: [
-          "#2F6E95", // Default bar color
-          "#D0344F", // Lowest value (Feb)
-          "#2F6E95",
-          "#2F6E95",
-          "#2F6E95",
-          "#2F6E95",
-          "#2F6E95",
-          "#2F6E95",
-          "#60A5FA", // Highest value (Sep)
-          "#F3F4F6",
-          "#F3F4F6",
-          "#F3F4F6", // Future months
-        ],
+        data: monthlyUsersData.map((item) => item.userCount),
+        backgroundColor: monthlyUsersData.map((value, index) => {
+          if (index === 1) return "#D0344F"; // Lowest value (Feb)
+          if (index === 8) return "#60A5FA"; // Highest value (Sep)
+          return "#2F6E95"; // Default color
+        }),
         borderRadius: 4,
       },
     ],
   };
 
-  // Chart options
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        display: false, // Hide the default legend
+        display: false,
       },
     },
     scales: {

@@ -1,112 +1,182 @@
-import React, { useState } from "react";
-import { FaCalendarAlt, FaClock, FaArrowLeft } from "react-icons/fa";
+import React from "react";
 import { useNavigate } from "react-router";
+import { useFormik } from "formik";
+import { FaCalendarAlt, FaClock, FaArrowLeft } from "react-icons/fa";
+import { useNotification } from "../../../hooks/api/Post";
+import { processNotification } from "../../../lib/utils";
+import { createNotificationValues } from "../../../init/authentication/dummyLoginValues";
+import { createNotificationSchema } from "../../../schema/authentication/dummyLoginSchema";
 
 const CreateNotification = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [userType, setUserType] = useState("all");
   const navigate = useNavigate();
+  const { loading, postNotificationData } = useNotification();
+
+  const formik = useFormik({
+    initialValues: createNotificationValues,
+    validationSchema: createNotificationSchema,
+    validateOnChange: true,
+    validateOnBlur: true,
+    onSubmit: async (values) => {
+      const data = {
+        title: values.title,
+        description: values.description,
+        date: `${values.date}T${values.time}:00Z`,
+        role: values.userType,
+      };
+
+      try {
+        await postNotificationData(
+          "/admin/notification",
+          data,
+          processNotification
+        );
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  });
 
   return (
     <div className="w-full h-full mx-auto bg-white p-6 ml-1 mt-8 rounded-xl shadow">
       <div className="flex items-center mb-4">
-        <button className="flex items-center text-black hover:text-gray-800 mr-2">
+        <button
+          onClick={() => navigate("/app/notifications")}
+          className="flex items-center text-black hover:text-gray-800 mr-2"
+        >
           <FaArrowLeft />
         </button>
         <h2 className="text-xl font-semibold">Create Notification</h2>
       </div>
       <div className="p-6">
-        <span className="text-gray-700 mb-2">Title of Notification</span>
-        {/* Title Input */}
-        <input
-          type="text"
-          placeholder="Title of Notification"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full border rounded-md p-2 mb-4 outline-none focus:ring-2 focus:ring-blue-400"
-        />
-
-        {/* Description Input */}
-        <span className="text-gray-700 mb-2">Description of Notification</span>
-
-        <textarea
-          placeholder="Description of Notification"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full border rounded-md p-2 mb-4 outline-none focus:ring-2 focus:ring-blue-400"
-        ></textarea>
-
-        {/* Date and Time Inputs */}
-        <div className="flex gap-0 mb-4">
-          <div className="relative mr-2">
-            <FaCalendarAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+        <form onSubmit={formik.handleSubmit}>
+          <div className="mb-4">
+            <span className="text-gray-700 mb-2">Title of Notification</span>
             <input
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-[220px] border rounded-xl p-2 pl-10 outline-none focus:ring-2 focus:ring-blue-400"
+              type="text"
+              placeholder="Title of Notification"
+              name="title"
+              value={formik.values.title}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="w-full border rounded-md p-2 mb-4 outline-none focus:ring-2 focus:ring-blue-400"
             />
+            {formik.touched.title && formik.errors.title && (
+              <p className="text-red-700 text-sm">{formik.errors.title}</p>
+            )}
           </div>
-          <div className="relative">
-            <FaClock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="time"
-              value={time}
-              onChange={(e) => setTime(e.target.value)}
-              className="w-[220px] border rounded-xl p-2 pl-10 outline-none focus:ring-2 focus:ring-blue-400"
+
+          <div className="mb-4">
+            <span className="text-gray-700 mb-2">
+              Description of Notification
+            </span>
+            <textarea
+              placeholder="Description of Notification"
+              name="description"
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="w-full border rounded-md p-2 mb-4 outline-none focus:ring-2 focus:ring-blue-400"
             />
+            {formik.touched.description && formik.errors.description && (
+              <p className="text-red-700 text-sm">
+                {formik.errors.description}
+              </p>
+            )}
           </div>
-        </div>
 
-        {/* User Type Selection */}
-        <div className="mb-4">
-          <span className="text-gray-700">User Type-Based</span>
-          <div className="flex gap-6 mt-2">
-            <label className="flex items-center gap-2">
+          <div className="flex gap-0 mb-4">
+            <div className="relative mr-2">
+              <FaCalendarAlt className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
-                type="radio"
-                value="winging"
-                checked={userType === "winging"}
-                onChange={() => setUserType("winging")}
-                className="form-radio"
+                type="date"
+                name="date"
+                value={formik.values.date}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="w-[220px] border rounded-xl p-2 pl-10 outline-none focus:ring-2 focus:ring-blue-400"
               />
-              Winging Only Users
-            </label>
-            <label className="flex items-center gap-2">
+              {formik.touched.date && formik.errors.date && (
+                <p className="text-red-700 text-sm">{formik.errors.date}</p>
+              )}
+            </div>
+            <div className="relative">
+              <FaClock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
-                type="radio"
-                value="dating"
-                checked={userType === "dating"}
-                onChange={() => setUserType("dating")}
-                className="form-radio"
+                type="time"
+                name="time"
+                value={formik.values.time}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="w-[220px] border rounded-xl p-2 pl-10 outline-none focus:ring-2 focus:ring-blue-400"
               />
-              Dating Plus Winging Users
-            </label>
-            <label className="flex items-center gap-2">
-              <input
-                type="radio"
-                value="all"
-                checked={userType === "all"}
-                onChange={() => setUserType("all")}
-                className="form-radio"
-              />
-              All Users (Both Categories)
-            </label>
+              {formik.touched.time && formik.errors.time && (
+                <p className="text-red-700 text-sm">{formik.errors.time}</p>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Buttons */}
-        <div className="flex gap-4 mt-2">
-          <button className="bg-[#5BAFEB] w-[150px] h-[50px] text-white px-6 py-2 rounded-md hover:bg-[#41a1e6]">
-            Save
-          </button>
-          <button className="bg-gray-300 text-[14px] w-[150px] h-[50px] font-bold text-black px-6 py-2 rounded-md hover:bg-gray-400">
-            Cancel
-          </button>
-        </div>
+          <div className="mb-4">
+            <span className="text-gray-700">User Type-Based</span>
+            <div className="flex gap-6 mt-2">
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="userType"
+                  value="winging"
+                  checked={formik.values.userType === "winging"}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="form-radio"
+                />
+                Winging Only Users
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="userType"
+                  value="dating"
+                  checked={formik.values.userType === "dating"}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="form-radio"
+                />
+                Dating Plus Winging Users
+              </label>
+              <label className="flex items-center gap-2">
+                <input
+                  type="radio"
+                  name="userType"
+                  value="all"
+                  checked={formik.values.userType === "all"}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className="form-radio"
+                />
+                All Users (Both Categories)
+              </label>
+            </div>
+            {formik.touched.userType && formik.errors.userType && (
+              <p className="text-red-700 text-sm">{formik.errors.userType}</p>
+            )}
+          </div>
+
+          <div className="flex gap-4 mt-2">
+            <button
+              type="submit"
+              className="bg-[#5BAFEB] w-[150px] h-[50px] text-white px-6 py-2 rounded-md hover:bg-[#41a1e6]"
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save"}
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate("/notifications")}
+              className="bg-gray-300 text-[14px] w-[150px] h-[50px] font-bold text-black px-6 py-2 rounded-md hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

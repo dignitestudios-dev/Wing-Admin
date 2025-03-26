@@ -1,19 +1,41 @@
-import React, { useContext } from "react";
+import React, { useState } from "react";
 import AuthInput from "../../components/authentication/AuthInput";
 import AuthSubmitBtn from "../../components/authentication/AuthSubmitBtn";
 import { useNavigate } from "react-router";
 import { Gradient, Black, Pill, Logo, LoginImage } from "../../assets/export";
+import { useLogin } from "../../hooks/api/Post";
+import { processLogin } from "../../lib/utils";
+import { useFormik } from "formik";
+import { loginValues } from "../../init/authentication/dummyLoginValues";
+import { signInSchema } from "../../schema/authentication/dummyLoginSchema";
 
 const Login = () => {
+  const { loading, postData } = useLogin();
   const navigate = useNavigate();
+
+  const { values, handleBlur, handleChange, handleSubmit, errors, touched } =
+    useFormik({
+      initialValues: loginValues,
+      validationSchema: signInSchema,
+      validateOnChange: true,
+      validateOnBlur: true,
+      onSubmit: async (values, action) => {
+        const data = { phone: values.phone };
+
+        postData("/auth/signIn/admin", false, null, data, processLogin);
+      },
+    });
 
   return (
     <div className="flex w-full h-screen overflow-hidden bg-gradient-to-b from-[#24638F] to-[#051724] ">
       <form
-        onSubmit={() => navigate("/auth/verify-otp")}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(e);
+        }}
         className="w-full lg:w-1/2 h-full bg-white p-8 lg:p-20 flex flex-col justify-start items-start gap-8"
       >
-        <div className="flex justify-left items-left mr-14 w-full ">
+        <div className="flex justify-left items-left mr-14 w-full">
           <img
             src={Logo}
             alt="logo"
@@ -27,43 +49,27 @@ const Login = () => {
         </span>
         <div className="flex flex-col w-full h-auto justify-start items-start gap-4 ml-8 ">
           <AuthInput
+            id="phone"
             text={"Phone"}
             placeholder={"Enter phone number here"}
-            type={"number"}
+            type={"tel"}
+            name="phone"
+            value={values.phone}
+            onChange={handleChange}
+            onBlur={handleBlur}
+            error={errors?.phone}
+            touched={touched?.phone}
           />
-          {/* <div className="flex flex-col w-full lg:w-[434px] justify-start items-end gap-1">
-            <AuthInput
-              text={"Password"}
-              placeholder={"Enter Password"}
-              type={"password"}
-            />
-            <button
-              type="button"
-              onClick={() => navigate("auth/forgot-password")}
-              className="text-sm font-medium text-[#109BFF]"
-            >
-              Forgot Password?
-            </button>
-          </div> */}
+          {/* {errors.phone && touched.phone && (
+            <p className="text-red-700 text-sm font-medium">{errors.phone}</p>
+          )} */}
         </div>
         <div className="ml-8">
-          <AuthSubmitBtn text={"Next"} />
+          <AuthSubmitBtn text={"Next"} loading={loading} />
         </div>
       </form>
 
       <div className="hidden lg:flex flex-col justify-center items-center w-1/2 h-full relative">
-        {/* <img
-          src={Gradient}
-          alt="gradient"
-          className="absolute inset-25 w-full h-full"
-        />
-
-        <img
-          src={Black}
-          alt="black_overlay"
-          className="absolute inset-25 w-[60%] h-[60%]"
-        /> */}
-
         <div className="relative flex justify-center items-center h-full mb-28">
           <img
             src={LoginImage}

@@ -3,7 +3,7 @@ import { ErrorToast } from "./components/global/Toaster"; // Import your toaster
 import Cookies from "js-cookie";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
-export const baseUrl = "https://backend.qualityandquantityapp.com";
+export const baseUrl = "https://api.wingxapp.com";
 // export const baseUrl = "https://155e-45-199-187-86.ngrok-free.app";
 // export const baseUrl = "https://necessi.erdumadnan.com/api";
 
@@ -24,7 +24,7 @@ const instance = axios.create({
 });
 
 instance.interceptors.request.use((request) => {
-  const token = Cookies.get("token");
+      const token = Cookies.get("authToken");
   if (!navigator.onLine) {
     // No internet connection
     ErrorToast(

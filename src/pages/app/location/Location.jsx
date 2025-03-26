@@ -2,27 +2,17 @@ import React, { useState } from "react";
 import { MdLocationOn } from "react-icons/md";
 import { FaFilter } from "react-icons/fa";
 import FilterModal from "../../../components/global/FilterModal";
+import { useLocationData } from "../../../hooks/api/Get"; // Import the custom hook
+import SkeletonLoader from "../../../components/global/SkeletonLoader";
 
 const Location = () => {
-  // Static data
-  const topLocations = [
-    { _id: "New York", count: 150 },
-    { _id: "Los Angeles", count: 120 },
-    { _id: "Chicago", count: 90 },
-    { _id: "San Francisco", count: 75 },
-    { _id: "Miami", count: 50 },
-  ];
-
-  const leastLocations = [
-    { _id: "Omaha", count: 5 },
-    { _id: "Boise", count: 7 },
-    { _id: "Reno", count: 10 },
-    { _id: "Lincoln", count: 12 },
-    { _id: "Des Moines", count: 15 },
-  ];
-
-  const [loading, setLoading] = useState(false);
+  // Fetch location data from the custom hook
+  const { loading, topLocations, bottomLocations } = useLocationData();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  if (loading) {
+    return <SkeletonLoader />;
+  }
 
   return (
     <>
@@ -37,13 +27,14 @@ const Location = () => {
             id="filter-button"
           />
         </div>
+
         <div className="grid gap-6 md:grid-cols-2">
           {/* Top Locations */}
           <div className="bg-[#FCFCFC] p-6 rounded-xl border border-[#CFCFCF] shadow-sm">
-            <h3 className="text-lg text-center  text-gray-800 mb-4">
-              Top 10 cities/regions with the highest user concentration{" "}
+            <h3 className="text-lg text-center text-gray-800 mb-4">
+              Top 10 cities/regions with the highest user concentration
             </h3>
-            <div className="overflow-x-auto  pb-8 pr-8 pl-8">
+            <div className="overflow-x-auto pb-8 pr-8 pl-8">
               <table className="w-full table-auto text-sm">
                 <thead className="border-b">
                   <tr>
@@ -77,10 +68,10 @@ const Location = () => {
 
           {/* Least Locations */}
           <div className="bg-[#FCFCFC] p-6 rounded-lg border border-[#CFCFCF] shadow-sm">
-            <h3 className="text-lg text-center  text-gray-800 mb-4">
-              Bottom 10 cities/regions with the lowest user count{" "}
+            <h3 className="text-lg text-center text-gray-800 mb-4">
+              Bottom 10 cities/regions with the lowest user count
             </h3>
-            <div className="overflow-x-auto  pb-8 pr-8 pl-8">
+            <div className="overflow-x-auto pb-8 pr-8 pl-8">
               <table className="w-full table-auto text-sm">
                 <thead className="border-b">
                   <tr>
@@ -93,7 +84,7 @@ const Location = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {topLocations.map((location, index) => (
+                  {bottomLocations.map((location, index) => (
                     <tr
                       key={index}
                       className="hover:bg-gray-50 transition duration-150"
@@ -112,6 +103,7 @@ const Location = () => {
             </div>
           </div>
         </div>
+
         {/* Filter Modal */}
         <FilterModal
           isOpen={isFilterOpen}

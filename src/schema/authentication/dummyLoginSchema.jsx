@@ -1,11 +1,13 @@
 import * as Yup from "yup";
 
 export const signInSchema = Yup.object({
-  email: Yup.string()
-    .email("Please enter a valid email address.")
-    .required("Please enter your email"),
-  password: Yup.string()
-    .matches(/^(?!\s)(?!.*\s$)/, "Password must not begin or end with spaces")
-    .min(6, "Password must contain atleast 6 alphanumeric characters.")
-    .required("Please enter your password"),
+  phone: Yup.string().required("Please enter your phone number"),
+});
+
+export const createNotificationSchema = Yup.object({
+  title: Yup.string().required("Title is required"),
+  description: Yup.string().required("Description is required"),
+  date: Yup.string().required("Date is required"),
+  time: Yup.string().required("Time is required"),
+  userType: Yup.string().required("User type is required"),
 });

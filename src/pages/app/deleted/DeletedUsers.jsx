@@ -2,31 +2,19 @@ import React, { useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import FilterModal from "../../../components/global/FilterModal";
 import { FaSearch } from "react-icons/fa";
+import { useDeletedUsers } from "../../../hooks/api/Get"; // Import the custom hook
+import SkeletonLoader from "../../../components/global/SkeletonLoader";
 
 const DeletedUsers = () => {
-  // Static data
-  const reasons = [
-    {
-      fullName: "John Doe",
-      email: "123456789",
-      reason: "Account was inactive for 6 months",
-      status: "Deleted", // Add status
-      updatedAt: "2025-03-01T12:00:00Z",
-      profilePicture: "https://randomuser.me/api/portraits/men/1.jpg",
-    },
-    {
-      fullName: "Jane Smith",
-      email: "123456789",
-      reason: "Policy violation",
-      status: "Deactivated", // Add status
-      updatedAt: "2025-02-28T08:30:00Z",
-      profilePicture: "https://randomuser.me/api/portraits/women/2.jpg",
-    },
-    // Add more static data as needed
-  ];
-
   const [searchInput, setSearchInput] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
 
+  // const apiUrl = "/admin/user/deactivated";
+
+  const { loading, data, pagination } = useDeletedUsers(
+    "/admin/user/deactivated",
+    currentPage
+  );
   const convertDate = (dateIso) => {
     const date = new Date(dateIso);
     const year = date.getFullYear();
@@ -35,15 +23,14 @@ const DeletedUsers = () => {
     return `${month}/${day}/${year}`;
   };
 
-  const filteredData = reasons.filter(
+  const filteredData = data?.filter(
     (reason) =>
-      reason.fullName.toLowerCase().includes(searchInput.toLowerCase()) ||
-      reason.email.toLowerCase().includes(searchInput.toLowerCase())
+      reason.name?.toLowerCase().includes(searchInput.toLowerCase()) ||
+      reason.phone?.toLowerCase().includes(searchInput.toLowerCase())
   );
 
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const totalPages = pagination.totalPages || 1;
 
   const currentData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
@@ -55,6 +42,10 @@ const DeletedUsers = () => {
   };
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  if (loading) {
+    return <SkeletonLoader />; // You can replace this with a loading spinner
+  }
 
   return (
     <>
@@ -89,155 +80,142 @@ const DeletedUsers = () => {
             />
           </div>
         </div>
-
-        {filteredData.length === 0 ? (
-          <p className="text-center text-gray-500 py-4">No users found</p>
-        ) : (
-          <div className="w-full overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm text-gray-500">
-              <thead>
-                <tr>
-                  <th
-                    scope="col"
-                    className="px-6 lg:px-4 xl:px-0 font-medium text-[#0A150F80]"
-                  >
-                    User
+        <div className="w-full overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm text-gray-500">
+            <thead>
+              <tr>
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4 xl:px-0 font-medium text-[#0A150F80]"
+                >
+                  User
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4 xl:px-0 font-medium text-[#0A150F80]"
+                >
+                  Status
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4 xl:px-0 font-medium text-[#0A150F80] "
+                >
+                  Reason
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4 xl:px-0 font-medium text-[#0A150F80]"
+                >
+                  Date
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {currentData.map((reason, key) => (
+                <tr key={key}>
+                  <th className="px-6 lg:px-4 xl:px-0 flex gap-3 py-4 font-normal text-black">
+                    <div className="relative h-10 w-10">
+                      <img
+                        className="h-full w-full rounded-full object-cover object-center"
+                        src={
+                          reason?.profilePicture ||
+                          "https://randomuser.me/api/portraits/men/1.jpg"
+                        }
+                        alt="Profile"
+                      />
+                    </div>
+                    <div className="text-sm">
+                      <div className="font-medium text-black">
+                        {reason?.name || "Unknown User"}
+                      </div>
+                      <div className="text-gray-400">{reason?.phone}</div>
+                    </div>
                   </th>
+                  <td className="px-6 lg:px-4 xl:px-0 py-4 text-black capitalize">
+                    {reason?.isDelete ? "Deleted" : "Deactivated"}
+                  </td>
+                  <td className="px-6 lg:px-4 xl:px-0 py-4 text-black capitalize max-w-xs overflow-hidden h-12">
+                    <p className="line-clamp-3">
+                      {reason?.bio || "No reason provided"}
+                    </p>
+                  </td>
 
-                  <th
-                    scope="col"
-                    className="px-6 lg:px-4 xl:px-0 font-medium text-[#0A150F80]"
-                  >
-                    Status
-                  </th>
-
-                  <th
-                    scope="col"
-                    className="px-6 lg:px-4 xl:px-0 font-medium text-[#0A150F80]"
-                  >
-                    Reason
-                  </th>
-
-                  <th
-                    scope="col"
-                    className="px-6 lg:px-4 xl:px-0 font-medium text-[#0A150F80]"
-                  >
-                    Date
-                  </th>
+                  <td className="px-6 lg:px-4 xl:px-0 py-4 text-black font-normal">
+                    {convertDate(reason?.updatedAt)}
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {currentData.map((reason, key) => {
-                  return (
-                    <tr key={key}>
-                      <th className="px-6 lg:px-4 xl:px-0 flex gap-3 py-4 font-normal text-black">
-                        <div className="relative h-10 w-10">
-                          <img
-                            className="h-full w-full rounded-full object-cover object-center"
-                            src={reason.profilePicture}
-                            alt=""
-                          />
-                          {/* <span className="absolute right-0 bottom-0 h-2 w-2 rounded-full bg-green-400 ring ring-white"></span> */}
-                        </div>
-                        <div className="text-sm">
-                          <div className="font-medium text-black">
-                            {reason.fullName}
-                          </div>
-                          <div className="text-gray-400">{reason.email}</div>
-                        </div>
-                      </th>
+              ))}
+            </tbody>
+          </table>
 
-                      <td className="px-6 lg:px-4 xl:px-0 py-4 text-black capitalize">
-                        {reason.status} {/* Display Status */}
-                      </td>
-
-                      <td className="px-6 lg:px-4 xl:px-0 py-4  text-black capitalize">
-                        {reason.reason}
-                      </td>
-
-                      <td className="px-6 lg:px-4 xl:px-0 py-4 text-black font-normal">
-                        {convertDate(reason.updatedAt)}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-
-            <nav
-              className="flex items-end justify-end space-x-2 mt-4"
-              aria-label="Pagination"
+          <nav
+            className="flex items-end justify-end space-x-2 mt-4"
+            aria-label="Pagination"
+          >
+            <button
+              type="button"
+              onClick={() =>
+                goToPage(currentPage > 1 ? currentPage - 1 : currentPage)
+              }
+              className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300 focus:outline-none"
+              aria-label="Previous"
             >
-              {/* Previous Button */}
-              <button
-                type="button"
-                onClick={() =>
-                  goToPage(currentPage > 1 ? currentPage - 1 : currentPage)
-                }
-                className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300 focus:outline-none"
-                aria-label="Previous"
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <svg
-                  className="size-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                <path d="m15 18-6-6 6-6"></path>
+              </svg>
+            </button>
+
+            <div className="flex items-center space-x-3 bg-[#EDEDED] px-4 py-2 rounded-full">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => goToPage(i + 1)}
+                  className={`size-8 flex justify-center items-center rounded-full text-gray-800 transition ${
+                    currentPage === i + 1
+                      ? "bg-blue-500 text-white shadow-md"
+                      : "hover:bg-gray-300"
+                  }`}
                 >
-                  <path d="m15 18-6-6 6-6"></path>
-                </svg>
-              </button>
+                  {i + 1}
+                </button>
+              ))}
+            </div>
 
-              {/* Page Numbers */}
-              <div className="flex items-center space-x-3 bg-[#EDEDED] px-4 py-2 rounded-full">
-                {Array.from({ length: totalPages }, (_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={() => goToPage(i + 1)}
-                    className={`size-8 flex justify-center items-center rounded-full text-gray-800 transition ${
-                      currentPage === i + 1
-                        ? "bg-blue-500 text-white shadow-md"
-                        : "hover:bg-gray-300"
-                    }`}
-                  >
-                    {i + 1}
-                  </button>
-                ))}
-              </div>
-
-              {/* Next Button */}
-              <button
-                type="button"
-                onClick={() =>
-                  goToPage(
-                    currentPage < totalPages ? currentPage + 1 : currentPage
-                  )
-                }
-                className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300 focus:outline-none"
-                aria-label="Next"
+            <button
+              type="button"
+              onClick={() =>
+                goToPage(
+                  currentPage < totalPages ? currentPage + 1 : currentPage
+                )
+              }
+              className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300 focus:outline-none"
+              aria-label="Next"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               >
-                <svg
-                  className="size-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="m9 18 6-6-6-6"></path>
-                </svg>
-              </button>
-            </nav>
-          </div>
-        )}
+                <path d="m9 18 6-6-6-6"></path>
+              </svg>
+            </button>
+          </nav>
+        </div>
       </div>
-      {/* Filter Modal */}
+
       <FilterModal
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}

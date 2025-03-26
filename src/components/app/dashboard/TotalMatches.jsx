@@ -10,7 +10,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import { useDashboardData } from "../../../hooks/api/Get"; // Import the custom hook
+import SkeletonLoader from "../../global/SkeletonLoader";
 
+// Register required components for Chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -22,35 +25,32 @@ ChartJS.register(
 );
 
 const TotalMatches = () => {
-  const [filter, setFilter] = useState("weekly");
+  const [filter, setFilter] = useState("monthly"); // default to 'monthly'
 
-  const data = {
-    daily: [50, 60, 70, 80, 90, 100, 110],
-    weekly: [100, 200, 150, 100, 300, 450, 250, 150, 200, 350, 400, 500],
-    monthly: [1200, 1400, 1500, 1600, 1700, 1800, 1900],
-    lastMonth: [1000, 1100, 1200, 1300, 1400, 1500, 1600],
-    yearly: [4000, 4200, 4300, 4400, 4600, 4800, 5000],
-  };
+  // Fetch dashboard data using the custom hook
+  const { loading, data } = useDashboardData();
 
+  if (loading) {
+    return <SkeletonLoader />; // Show skeleton loader when loading
+  }
+
+  if (!data) {
+    return <div>No data available</div>; // Handle the case where there is no data
+  }
+
+  const matchGraphData = data?.matchGraph || [];
+
+  // Get the data for the selected filter
+  const filteredData = matchGraphData.map((item) => item.matchCount);
+  const labels = matchGraphData.map((item) => item.month);
+
+  // Prepare chart data
   const chartData = {
-    labels: [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Aug",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
-    ],
+    labels: labels, // Get months from match graph data
     datasets: [
       {
-        label: "Total Users Matches",
-        data: data[filter],
+        label: "Total Matches",
+        data: filteredData,
         borderColor: "#3B82F6",
         backgroundColor: "rgba(59, 130, 246, 0.2)",
         fill: true,
@@ -66,6 +66,7 @@ const TotalMatches = () => {
     ],
   };
 
+  // Chart options with responsive settings and other configurations
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -74,7 +75,11 @@ const TotalMatches = () => {
         grid: { display: false },
       },
       y: {
-        ticks: { beginAtZero: true },
+        min: 0, // Set min to zero for y-axis
+        ticks: {
+          beginAtZero: true,
+          stepSize: 5, // Adjust step size if required
+        },
         grid: { color: "#E5E7EB" },
       },
     },
@@ -99,15 +104,16 @@ const TotalMatches = () => {
     <div className="w-full p-6 bg-white rounded-xl">
       <div className="w-full h-10 flex justify-between items-center mb-4">
         <h1 className="text-black text-xl">Total Matches</h1>
-        {/* Total Users Matches Heading */}
         <div className="flex items-center">
           <span
             className="w-4 h-4 mr-2 rounded-full bg-blue-500"
             aria-label="Blue Circle"
           ></span>
-          <h1 className="text-black text-[11px] mr-2">Total Users Matches</h1>
+          <h1 className="text-black text-[11px] mr-2">Total Matches</h1>
         </div>
       </div>
+
+      {/* Render the chart */}
       <div style={{ height: "300px" }}>
         <Line data={chartData} options={options} />
       </div>

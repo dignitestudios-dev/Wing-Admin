@@ -1,28 +1,54 @@
 import React, { useState } from "react";
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 
-const AuthInput = ({ state, setState, text, type, error, placeholder }) => {
+const AuthInput = ({
+  type,
+  id,
+  name,
+  placeholder,
+  value,
+  onChange,
+  onBlur,
+  text,
+  error,
+  touched,
+}) => {
   const [isPassVisible, setIsPassVisible] = useState(false);
 
   return (
-    <div className="w-full h-auto flex   flex-col gap-1 justify-start items-start  ">
-      <label className="ml-1 text-sm font-medium text-black capitalize">
+    <div className="w-full h-auto flex flex-col gap-1 justify-start items-start  ">
+      <label className="ml-1 text-[16px] font-medium text-black capitalize">
         {text}
       </label>
+
       <div
-        className={`w-full h-[52px] lg:w-[434px] focus-within:border-[1px] focus-within:border-[#55C9FA]   rounded-[12px] bg-white flex items-center justify-start  ${
-          error && "error"
-        } `}
+        className={`w-full h-[52px] lg:w-[434px] text-white border border-gray-300 focus-within:border-[1px]
+            rounded-lg bg-white bg-opacity-30 flex items-center justify-start  ${
+              error && "focus-within:border-red-600 focus-within:border-[1px]"
+            } `}
       >
         <div
           className={` w-full  h-full flex items-center justify-center  rounded-[12px] relative`}
         >
           <input
+            id={id}
+            name={name}
             type={isPassVisible ? "text" : type}
             placeholder={placeholder}
-            className="w-full outline-none border bg-white rounded-[13px] placeholder:text-[13px] placeholder:font-normal placeholder:text-[#6B737E] text-black bg-transparent h-full px-3 text-sm font-medium "
-            value={state}
-            onChange={(e) => setState(e.target.value)}
+            // placeholder={placeholder}
+            className={`w-full outline-none bg-transparent rounded-full
+              ${
+                type == "password"
+                  ? ` text-[14px]  ${
+                      isPassVisible
+                        ? "font-medium tracking-wide"
+                        : "font-verdana tracking-wider text-[18px]"
+                    }`
+                  : "text-[14px] text-black font-medium tracking-wide"
+              } h-full px-4`}
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
           />
           <button
             type="button"
@@ -37,6 +63,7 @@ const AuthInput = ({ state, setState, text, type, error, placeholder }) => {
           </button>
         </div>
       </div>
+      {error && touched && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   );
 };

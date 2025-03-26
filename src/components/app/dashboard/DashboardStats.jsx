@@ -1,18 +1,20 @@
 import React from "react";
-
 import { PiUsersThreeBold } from "react-icons/pi";
 import { IoBoatOutline } from "react-icons/io5";
 import { CgFileDocument } from "react-icons/cg";
 import { RiUserFollowLine } from "react-icons/ri";
 import { IoCalendarOutline } from "react-icons/io5";
+import { useDashboardData } from "../../../hooks/api/Get"; // Import the custom hook
+import SkeletonLoader from "../../global/SkeletonLoader";
 
 const DashboardStats = () => {
-  const data = {
-    manager: 10,
-    employees: 120,
-    boats: 30,
-    task: "Feb",
-  };
+  const { loading, data } = useDashboardData();
+
+  if (loading) {
+    return <SkeletonLoader />;
+  }
+
+  const { dashBoard, userGraph, matchGraph } = data || {};
 
   return (
     <div className="w-full lg:w-[90%] grid grid-cols-2 lg:grid-cols-5 justify-start items-start gap-4 lg:gap-36">
@@ -22,7 +24,7 @@ const DashboardStats = () => {
         </span>
         <div className="w-auto flex flex-col justify-start items-start">
           <span className="text-[18px] font-bold text-black">
-            {data?.manager}
+            {dashBoard?.totalUser}
           </span>
           <span className="text-[#0A150F80] text-[12px] font-normal">
             Total Users
@@ -35,7 +37,7 @@ const DashboardStats = () => {
         </span>
         <div className="w-auto flex flex-col justify-start items-start">
           <span className="text-[18px] font-bold text-black">
-            {data?.employees}
+            {dashBoard?.totalActiveUser}
           </span>
           <span className="text-[#0A150F80] text-[12px] font-normal">
             Active Users
@@ -48,10 +50,10 @@ const DashboardStats = () => {
         </span>
         <div className="w-auto flex flex-col justify-start items-start">
           <span className="text-[18px] font-bold text-black">
-            {data?.boats}
+            {dashBoard?.totalDeletedUser}
           </span>
           <span className="text-[#0A150F80] text-[12px] font-normal">
-            Deleted Users{" "}
+            Deleted Users
           </span>
         </div>
       </div>
@@ -60,7 +62,9 @@ const DashboardStats = () => {
           <IoCalendarOutline />
         </span>
         <div className="w-auto flex flex-col justify-start items-start">
-          <span className="text-[18px] font-bold text-black">{data?.task}</span>
+          <span className="text-[18px] font-bold text-black">
+            {dashBoard?.leastJoinedMonth}
+          </span>
           <span className="text-[#0A150F80] text-[12px] font-normal">
             Least Joined Month
           </span>
@@ -71,7 +75,9 @@ const DashboardStats = () => {
           <IoCalendarOutline />
         </span>
         <div className="w-auto flex flex-col justify-start items-start">
-          <span className="text-[18px] font-bold text-black">{data?.task}</span>
+          <span className="text-[18px] font-bold text-black">
+            {dashBoard?.mostJoinedMonth}
+          </span>
           <span className="text-[#0A150F80] text-[12px] font-normal">
             Most Joined Month
           </span>

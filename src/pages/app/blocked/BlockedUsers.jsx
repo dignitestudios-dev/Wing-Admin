@@ -1,95 +1,24 @@
 import React, { useState } from "react";
-import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
-import { AiOutlineHeart } from "react-icons/ai";
-import { FaHeart } from "react-icons/fa";
-
-import { FaFilter } from "react-icons/fa";
+import { FaFilter, FaSearch } from "react-icons/fa";
 import BlockModal from "../../../components/global/BlockModal";
 import UnblockModal from "../../../components/global/UnblockModal";
 import FilterModal from "../../../components/global/FilterModal";
-import { FaSearch } from "react-icons/fa";
+import { useBlockedUsers } from "../../../hooks/api/Get"; // Import the new hook
+import SkeletonLoader from "../../../components/global/SkeletonLoader";
 
 const BlockedUsers = () => {
   const [searchInput, setSearchInput] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [genderDropdownOpen, setGenderDropdownOpen] = useState(false);
-  const [ageRange, setAgeRange] = useState("");
-  const [gender, setGender] = useState("");
-
-  const dummyUsers = [
-    {
-      id: 1,
-      profilePicture: "https://randomuser.me/api/portraits/men/1.jpg",
-      fullName: "John Doe",
-      age: 30,
-      gender: "Male",
-      email: "123456789",
-      createdAt: "2025-01-10",
-      state: "California",
-      city: "Los Angeles",
-      accountType: "Winging Only",
-      matches: 5,
-      isBlocked: true,
-    },
-    {
-      id: 2,
-      profilePicture: "https://randomuser.me/api/portraits/women/1.jpg",
-      fullName: "Jane Smith",
-      age: 28,
-      gender: "Female",
-      email: "123456789",
-      createdAt: "2024-11-20",
-      state: "Texas",
-      city: "Houston",
-      accountType: "Winging Only",
-      matches: 12,
-      isBlocked: false,
-    },
-    // Add more dummy data as needed
-  ];
-
-  const filteredData = dummyUsers.filter(
-    (user) =>
-      user.fullName.toLowerCase().includes(searchInput.toLowerCase()) ||
-      user.city.toLowerCase().includes(searchInput.toLowerCase())
-  );
-
   const [currentPage, setCurrentPage] = useState(1);
-
-  const itemsPerPage = 15;
-
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
-
-  const currentData = filteredData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const goToPage = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const handleDropdownToggle = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const handleDropdowngender = () => {
-    setGenderDropdownOpen(!genderDropdownOpen);
-  };
-
-  const handleSelectAge = (value) => {
-    setAgeRange(value);
-    setIsDropdownOpen(false);
-  };
-
-  const handleSelectGender = (value) => {
-    setGender(value);
-    setGenderDropdownOpen(false);
-  };
-
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
   const [isUnblockModalOpen, setIsUnblockModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const {
+    loading,
+    data: blockedUsers,
+    pagination,
+  } = useBlockedUsers("/admin/user/blocked", currentPage);
 
   const handleBlockClick = (user) => {
     setSelectedUser(user);
@@ -101,28 +30,34 @@ const BlockedUsers = () => {
     setIsUnblockModalOpen(true);
   };
 
-  const handleBlockSubmit = (title, description) => {
-    console.log("User Blocked:", selectedUser, title, description);
+  const handleBlockSubmit = () => {
+    console.log("User Blocked:", selectedUser);
     setIsBlockModalOpen(false);
   };
 
-  const handleUnblockSubmit = (title, description) => {
-    console.log("User Unblocked:", selectedUser, title, description);
+  const handleUnblockSubmit = () => {
+    console.log("User Unblocked:", selectedUser);
     setIsUnblockModalOpen(false);
   };
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const totalPages = Math.ceil(blockedUsers.length / 15);
+
+  const goToPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  if (loading) {
+    return <SkeletonLoader />;
+  }
 
   return (
     <div className="w-full p-6 ml-1 flex flex-col justify-start items-start gap-3 bg-white mt-8 rounded-md">
-      {/* Top Section with Heading and Filter Icon */}
       <div className="w-full flex justify-between items-center">
         <h2 className="text-2xl font-semibold">Blocked Users</h2>
         <FaFilter
           size={32}
           className="text-white bg-[#5BAFEB] p-2 rounded-lg cursor-pointer hover:opacity-80"
           onClick={() => setIsFilterOpen(!isFilterOpen)}
-          id="filter-button"
         />
       </div>
       <div className="w-full flex justify-start items-center gap-0">
@@ -150,83 +85,15 @@ const BlockedUsers = () => {
           <table className="w-full text-left text-gray-500">
             <thead>
               <tr>
-                <th className="lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80] min-w-[250px]">
+                <th className="lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80] min-w-[110px]">
                   Name
                 </th>
-                <th
-                  className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80] cursor-pointer relative"
-                  onClick={handleDropdownToggle}
-                >
-                  <span className="ml-1 flex">
-                    Age
-                    {isDropdownOpen ? (
-                      <MdArrowDropUp size={18} />
-                    ) : (
-                      <MdArrowDropDown size={18} />
-                    )}
-                  </span>
-                  {isDropdownOpen && (
-                    <div className="absolute bg-white border border-[#0A150F80] rounded-lg mt-2 w-40 shadow-lg z-10">
-                      <ul className="py-2">
-                        {[
-                          "All",
-                          "18-24",
-                          "25-34",
-                          "35-44",
-                          "45-54",
-                          "55-64",
-                          "65-74",
-                          "75+",
-                        ].map((range) => (
-                          <li
-                            key={range}
-                            className="px-4 py-2 text-[#0A150F80] hover:bg-[#f3f3f3] cursor-pointer"
-                            onClick={() => handleSelectAge(range)}
-                          >
-                            {range}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                <th className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80]">
+                  Age
                 </th>
-
-                <th
-                  className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80] cursor-pointer relative"
-                  onClick={handleDropdowngender}
-                >
-                  <span className="ml-1 flex">
-                    Gender
-                    {genderDropdownOpen ? (
-                      <MdArrowDropUp size={18} />
-                    ) : (
-                      <MdArrowDropDown size={18} />
-                    )}
-                  </span>
-                  {genderDropdownOpen && (
-                    <div className="absolute bg-white border border-[#0A150F80] rounded-lg mt-2 w-40 shadow-lg z-10">
-                      <ul className="py-2">
-                        {[
-                          "All",
-                          "Male",
-                          "Female",
-                          "Non-binary",
-                          "Genderqueer",
-                          "Other",
-                        ].map((genderOption) => (
-                          <li
-                            key={genderOption}
-                            className="px-4 py-2 text-[#0A150F80] hover:bg-[#f3f3f3] cursor-pointer"
-                            onClick={() => handleSelectGender(genderOption)}
-                          >
-                            {genderOption}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
+                <th className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80]">
+                  Gender
                 </th>
-
                 <th className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80]">
                   Created At
                 </th>
@@ -242,7 +109,6 @@ const BlockedUsers = () => {
                 <th className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80]">
                   Account Type
                 </th>
-                {/* Add new column for Action */}
                 <th className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80]">
                   Action
                 </th>
@@ -250,54 +116,54 @@ const BlockedUsers = () => {
             </thead>
 
             <tbody className="divide-y divide-gray-100 text-[13px] font-medium text-black">
-              {filteredData.length === 0 ? (
+              {blockedUsers.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="text-center py-4">
-                    No users found
+                    No blocked users found
                   </td>
                 </tr>
               ) : (
-                currentData.map((user, key) => (
+                blockedUsers.map((user, key) => (
                   <tr key={key} className="hover:bg-gray-50">
                     <td className="py-4">
-                      <div className="flex items-center space-x-4">
+                      <div className="flex items-center gap-2">
                         <img
-                          src={user.profilePicture}
-                          alt={user.fullName}
-                          className="w-10 h-10 rounded-full"
+                          src={user?.profilePicture || "user-avatar"}
+                          alt={user?.name}
+                          className="w-10 h-10 rounded-full object-cover"
                         />
-                        <div className="flex flex-col">
-                          <span className="text-md">{user.fullName}</span>
-                          <span className="text-xs text-[#ADADAD]">
-                            {user.email}
-                          </span>
+                        <div>
+                          <div>{user?.name}</div>
+                          <div className="text-sm text-gray-500">
+                            {user?.phone}
+                          </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-1 py-2">{user.age}</td>
-                    <td className="px-1 py-2">{user.gender}</td>
-                    <td className="px-1 py-2">{user.createdAt}</td>
-                    <td className="px-1 py-2">{user.state}</td>
-                    <td className="px-1 py-2">{user.city}</td>
-                    <td className="px-6 py-6 flex items-center space-x-1">
-                      <FaHeart size={18} className="text-red-500" />
-                      <span>{user.matches}</span>
+                    <td className="px-1 py-2">{user?.age || "N/A"}</td>
+                    <td className="px-1 py-2">{user?.gender}</td>
+                    <td className="px-1 py-2">
+                      {" "}
+                      {new Date(user.createdAt).toLocaleDateString("en-US")}
                     </td>
-                    <td className="py-4">{user.accountType}</td>
+                    <td className="px-1 py-2">{user?.state}</td>
+                    <td className="px-1 py-2">{user?.city}</td>
+                    <td className="px-6 py-6">{user?.matches}</td>
+                    <td className="py-4">{user?.role}</td>
                     <td>
                       <button
                         onClick={() =>
-                          user.isBlocked
+                          user?.isBlocked
                             ? handleUnblockClick(user)
                             : handleBlockClick(user)
                         }
                         className={`w-auto px-2 h-6 ${
-                          user.isBlocked
+                          user?.isBlocked
                             ? "bg-gray-300 text-black"
                             : "bg-[#5BAFEB] text-white"
                         } hover:opacity-80  rounded-full text-xs`}
                       >
-                        {user.isBlocked ? "Unblock" : "Block"}
+                        {user?.isBlocked ? "Unblock" : "Block"}
                       </button>
                     </td>
                   </tr>
@@ -306,21 +172,19 @@ const BlockedUsers = () => {
             </tbody>
           </table>
         </div>
-        {/* Block User Modal */}
+
         <BlockModal
           isOpen={isBlockModalOpen}
           onClose={() => setIsBlockModalOpen(false)}
           onSubmit={handleBlockSubmit}
         />
-        {/* Unblock User Modal */}
         <UnblockModal
           isOpen={isUnblockModalOpen}
           onClose={() => setIsUnblockModalOpen(false)}
           onSubmit={handleUnblockSubmit}
         />
-        {/* Pagination code remains unchanged */}
       </div>
-      {/* Filter Modal */}
+
       <FilterModal
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}

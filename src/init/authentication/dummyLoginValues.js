@@ -1,5 +1,15 @@
 export const loginValues = {
-  email: "",
-  password: "",
-  role: "admin",
+  phone:""
+};
+
+export const otpValues = {
+  otp: ["", "", "", ""], 
+};
+
+export const createNotificationValues = {
+  title: "",
+  description: "",
+  date: "",
+  time: "",
+  userType: "all",
 };

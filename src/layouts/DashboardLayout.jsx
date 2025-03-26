@@ -1,4 +1,4 @@
-import { Outlet } from "react-router";
+import { Outlet, useNavigate } from "react-router";
 import Navbar from "../components/layout/Navbar";
 import Sidebar from "../components/layout/Sidebar";
 import { useEffect, useState } from "react";
@@ -7,10 +7,8 @@ import { NoInternetImage } from "../assets/export";
 
 const DashboardLayout = () => {
   const [openNoInternet, setOpenNoInternet] = useState(false);
-
   useEffect(() => {
     if (!navigator.onLine) {
-      // Handle no internet connection
       setOpenNoInternet(true);
     }
   }, []);

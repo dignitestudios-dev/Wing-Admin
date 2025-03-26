@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { FaFilter, FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router";
-import { useNotifications } from "../../../hooks/api/Get"; // Import the new hook
+import { useNotifications } from "../../../hooks/api/Get";
 import FilterModal from "../../../components/global/FilterModal";
 import SkeletonLoader from "../../../components/global/SkeletonLoader";
 
@@ -40,7 +40,6 @@ const Notifications = () => {
         </div>
       </div>
 
-      {/* Search Bar */}
       <div className="w-full flex justify-start items-center gap-0 mb-4">
         <div className="relative w-full">
           <input
@@ -81,8 +80,7 @@ const Notifications = () => {
             </tr>
           </thead>
           <tbody>
-            {/* Table Data */}
-            {filteredNotifications.length === 0 ? (
+            {filteredNotifications?.length === 0 ? (
               <tr>
                 <td colSpan="4" className="text-center py-4 text-gray-500">
                   No notifications found
@@ -90,21 +88,21 @@ const Notifications = () => {
               </tr>
             ) : (
               filteredNotifications.map((notification, index) => (
-                <tr key={notification._id} className="border-b">
+                <tr key={notification?._id} className="border-b">
                   <td className="p-8">{index + 1}</td>
-                  <td className="p-2 font-medium">{notification.title}</td>
+                  <td className="p-2 font-medium">{notification?.title}</td>
                   <td className="p-2 text-[#18181880]">
-                    {notification.description}
+                    {notification?.description}
                   </td>
                   <td className="p-2">
                     <span
                       className={`px-3 py-1 text-xs font-medium rounded-full ${
-                        notification.isSent
+                        notification?.isSent
                           ? "bg-green-100 text-green-600"
                           : "bg-gray-100 text-gray-600"
                       }`}
                     >
-                      {notification.isSent ? "Delivered" : "Pending"}
+                      {notification?.isSent ? "Delivered" : "Pending"}
                     </span>
                   </td>
                 </tr>
@@ -114,7 +112,6 @@ const Notifications = () => {
         </table>
       </div>
 
-      {/* Filter Modal */}
       <FilterModal
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}

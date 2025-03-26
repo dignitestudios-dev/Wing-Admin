@@ -54,7 +54,7 @@ const Login = () => {
             placeholder={"Enter phone number here"}
             type={"tel"}
             name="phone"
-            value={values.phone}
+            value={values?.phone}
             onChange={handleChange}
             onBlur={handleBlur}
             error={errors?.phone}

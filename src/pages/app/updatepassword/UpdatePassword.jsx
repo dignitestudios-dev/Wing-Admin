@@ -3,7 +3,6 @@ import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { ChangePasswordMockup } from "../../../assets/export";
 
 const UpdatePassword = () => {
-  // States to manage the data
   const [password, setPassword] = useState("");
   const [newPass, setNewPass] = useState("");
   const [confPass, setConfPass] = useState("");

@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router";
+import { Navigate, Route, Routes } from "react-router";
 import { AuthenticationRoutes } from "./routes/AuthenticationRoutes";
 import { normalRoutes } from "./routes/NormalRoutes";
 import AuthLayout from "./layouts/AuthLayout";
@@ -8,6 +8,7 @@ import "./App.css";
 function App() {
   return (
     <Routes>
+      <Route path="/" element={<Navigate to="/auth/login" />} />
       <Route path="app" element={<DashboardLayout />}>
         {normalRoutes.map((route) => {
           return (

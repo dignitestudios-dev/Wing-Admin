@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { FaFilter, FaSearch } from "react-icons/fa";
-import BlockModal from "../../../components/global/BlockModal";
 import UnblockModal from "../../../components/global/UnblockModal";
 import FilterModal from "../../../components/global/FilterModal";
 import { useBlockedUsers } from "../../../hooks/api/Get"; // Import the new hook
 import SkeletonLoader from "../../../components/global/SkeletonLoader";
+import { useUnblockUser } from "../../../hooks/api/Delete";
+import { processunblockUser } from "../../../lib/utils";
 
 const BlockedUsers = () => {
   const [searchInput, setSearchInput] = useState("");
@@ -13,31 +14,24 @@ const BlockedUsers = () => {
   const [isUnblockModalOpen, setIsUnblockModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const { unblockUser, setUnblockUser } = useUnblockUser(setUpdate);
 
   const {
     loading,
     data: blockedUsers,
     pagination,
-  } = useBlockedUsers("/admin/user/blocked", currentPage);
-
-  const handleBlockClick = (user) => {
-    setSelectedUser(user);
-    setIsBlockModalOpen(true);
-  };
+  } = useBlockedUsers("/admin/user/blocked", currentPage, update);
 
   const handleUnblockClick = (user) => {
     setSelectedUser(user);
     setIsUnblockModalOpen(true);
-  };
-
-  const handleBlockSubmit = () => {
-    console.log("User Blocked:", selectedUser);
-    setIsBlockModalOpen(false);
+    console.log(first);
   };
 
   const handleUnblockSubmit = () => {
-    console.log("User Unblocked:", selectedUser);
     setIsUnblockModalOpen(false);
+    unblockUser(`/admin/user/blocked/${selectedUser?._id}`, processunblockUser);
   };
 
   const totalPages = Math.ceil(blockedUsers.length / 15);
@@ -152,18 +146,10 @@ const BlockedUsers = () => {
                     <td className="py-4">{user?.role}</td>
                     <td>
                       <button
-                        onClick={() =>
-                          user?.isBlocked
-                            ? handleUnblockClick(user)
-                            : handleBlockClick(user)
-                        }
-                        className={`w-auto px-2 h-6 ${
-                          user?.isBlocked
-                            ? "bg-gray-300 text-black"
-                            : "bg-[#5BAFEB] text-white"
-                        } hover:opacity-80  rounded-full text-xs`}
+                        className="bg-gray-500 text-black p-2 rounded-full"
+                        onClick={() => handleUnblockClick(user)}
                       >
-                        {user?.isBlocked ? "Unblock" : "Block"}
+                        Unblock
                       </button>
                     </td>
                   </tr>
@@ -173,11 +159,6 @@ const BlockedUsers = () => {
           </table>
         </div>
 
-        <BlockModal
-          isOpen={isBlockModalOpen}
-          onClose={() => setIsBlockModalOpen(false)}
-          onSubmit={handleBlockSubmit}
-        />
         <UnblockModal
           isOpen={isUnblockModalOpen}
           onClose={() => setIsUnblockModalOpen(false)}

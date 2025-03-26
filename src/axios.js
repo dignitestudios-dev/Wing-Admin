@@ -1,30 +1,54 @@
 import axios from "axios";
 import { ErrorToast } from "./components/global/Toaster"; // Import your toaster functions
 import Cookies from "js-cookie";
-import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import { UAParser } from "ua-parser-js";
+import { v4 as uuidv4 } from "uuid";
+// import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 export const baseUrl = "https://api.wingxapp.com";
 // export const baseUrl = "https://155e-45-199-187-86.ngrok-free.app";
-// export const baseUrl = "https://necessi.erdumadnan.com/api";
 
-async function getDeviceFingerprint() {
-  const fp = await FingerprintJS.load();
-  const result = await fp.get();
-  console.log(result.visitorId); // Unique device ID
-  return result.visitorId;
-}
+// async function getDeviceFingerprint() {
+//   const fp = await FingerprintJS.load();
+//   const result = await fp.get();
+//   console.log(result.visitorId); // Unique device ID
+//   return result.visitorId;
+// }
+
+const getDeviceName = () => {
+  const parser = new UAParser();
+  const result = parser.getResult();
+
+  const deviceName = result.device.model || "Unknown";
+  const deviceID = result.ua || "Unknown"; // User-Agent can serve as a unique identifier
+
+  return deviceName;
+};
+
+const getDeviceId = () => {
+  const parser = new UAParser();
+  const result = parser.getResult();
+  const uuid = uuidv4();
+
+  const deviceName = `${result.device.model}` || "Unknown";
+  const deviceID = result.ua || "Unknown"; // User-Agent can serve as a unique identifier
+
+  const preId = deviceName + uuid;
+
+  return preId;
+};
 
 const instance = axios.create({
   baseURL: baseUrl,
   headers: {
-    devicemodel: await getDeviceFingerprint(),
-    deviceuniqueid: await getDeviceFingerprint(),
+    devicemodel:  getDeviceName(),
+    deviceuniqueid:  getDeviceId(),
   },
   timeout: 10000, // 10 seconds timeout
 });
 
 instance.interceptors.request.use((request) => {
-      const token = Cookies.get("authToken");
+  const token = Cookies.get("token");
   if (!navigator.onLine) {
     // No internet connection
     ErrorToast(

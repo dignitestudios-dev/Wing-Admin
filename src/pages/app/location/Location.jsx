@@ -2,11 +2,10 @@ import React, { useState } from "react";
 import { MdLocationOn } from "react-icons/md";
 import { FaFilter } from "react-icons/fa";
 import FilterModal from "../../../components/global/FilterModal";
-import { useLocationData } from "../../../hooks/api/Get"; // Import the custom hook
+import { useLocationData } from "../../../hooks/api/Get";
 import SkeletonLoader from "../../../components/global/SkeletonLoader";
 
 const Location = () => {
-  // Fetch location data from the custom hook
   const { loading, topLocations, bottomLocations } = useLocationData();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -57,7 +56,7 @@ const Location = () => {
                         {location._id}
                       </td>
                       <td className="py-4 px-5 text-gray-700">
-                        {location.count}
+                        {location?.count}
                       </td>
                     </tr>
                   ))}
@@ -91,10 +90,10 @@ const Location = () => {
                     >
                       <td className="py-4 px-5 flex items-center gap-2 text-gray-700">
                         <MdLocationOn size={20} className="text-[#5BAFEB]" />
-                        {location._id}
+                        {location?._id}
                       </td>
                       <td className="py-4 px-5 text-gray-700">
-                        {location.count}
+                        {location?.count}
                       </td>
                     </tr>
                   ))}

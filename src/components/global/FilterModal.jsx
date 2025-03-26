@@ -1,10 +1,26 @@
 import { useState, useRef, useEffect } from "react";
 import { IoMdClose } from "react-icons/io";
 import { SlCalender } from "react-icons/sl";
+import CalendarField from "./CalendarField";
 
 const FilterModal = ({ isOpen, onClose }) => {
   const modalRef = useRef(null);
   const [position, setPosition] = useState({ top: 0, left: 0 });
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const [selectedDate, setSelectedDate] = useState("Nov, 15 2024");
+
+  // Function to toggle first modal
+  const toggleModal = () => {
+    setIsModalOpen((prev) => !prev);
+    // setIsModalOpenSecond(false);
+  };
+
+  const handleDateClick = (date) => {
+    setSelectedDate(date);
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -41,7 +57,14 @@ const FilterModal = ({ isOpen, onClose }) => {
       <div className="grid grid-cols-2 gap-4 mb-4 border-t pt-2">
         <div>
           <label className="text-sm font-medium">Start Date</label>
-          <div className="relative mt-1">
+          <CalendarField
+            toggleModal={toggleModal}
+            selectedDate={selectedDate}
+            isModalOpen={isModalOpen}
+            handleDateClick={handleDateClick}
+            // right={true}
+          />
+          {/* <div className="relative mt-1">
             <input
               type="text"
               placeholder="Select Date"
@@ -52,22 +75,17 @@ const FilterModal = ({ isOpen, onClose }) => {
               className="absolute right-2 top-3 text-gray-500" // Position the icon to the right
               size={16}
             />
-          </div>
+          </div> */}
         </div>
         <div>
           <label className="text-sm font-medium">End Date</label>
-          <div className="relative mt-1">
-            <input
-              type="text"
-              placeholder="Select Date"
-              className="w-full p-2 border border-black rounded-lg pr-10" // Added pr-10 for padding on the right
-              readOnly
-            />
-            <SlCalender
-              className="absolute right-2 top-3 text-gray-500" // Position the icon to the right
-              size={16}
-            />
-          </div>
+          <CalendarField
+            toggleModal={toggleModal}
+            selectedDate={selectedDate}
+            isModalOpen={isModalOpen}
+            handleDateClick={handleDateClick}
+            // right={true}
+          />
         </div>
       </div>
 

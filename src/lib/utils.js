@@ -34,6 +34,28 @@ export const processOtp = (data, navigate) => {
   }
 };
 
+
+export const processblockUser = (data,navigate , setUpdate ) => {
+  if (data?.success) {
+    SuccessToast("User Blocked Successfully");
+    setUpdate((prev) =>!prev)
+
+  } else {
+    ErrorToast("Cannot unblock user. Please try again.");
+  }
+};
+
+export const processunblockUser = (data, navigate , setUpdate) => {
+  if (data?.success) {
+    SuccessToast("User unblocked Successfully");
+    setUpdate((prev) =>!prev)
+  } else {
+    ErrorToast("Cannot block user. Please try again.");
+  }
+};
+
+
+
 export const processError = (error) => {
   console.log('error', error);
   if (error?.response?.data?.message) {

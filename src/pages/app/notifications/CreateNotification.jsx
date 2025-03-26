@@ -18,10 +18,10 @@ const CreateNotification = () => {
     validateOnBlur: true,
     onSubmit: async (values) => {
       const data = {
-        title: values.title,
-        description: values.description,
-        date: `${values.date}T${values.time}:00Z`,
-        role: values.userType,
+        title: values?.title,
+        description: values?.description,
+        date: `${values?.date}T${values?.time}:00Z`,
+        role: values?.userType,
       };
 
       try {
@@ -48,20 +48,20 @@ const CreateNotification = () => {
         <h2 className="text-xl font-semibold">Create Notification</h2>
       </div>
       <div className="p-6">
-        <form onSubmit={formik.handleSubmit}>
+        <form onSubmit={formik?.handleSubmit}>
           <div className="mb-4">
             <span className="text-gray-700 mb-2">Title of Notification</span>
             <input
               type="text"
               placeholder="Title of Notification"
               name="title"
-              value={formik.values.title}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              value={formik?.values?.title}
+              onChange={formik?.handleChange}
+              onBlur={formik?.handleBlur}
               className="w-full border rounded-md p-2 mb-4 outline-none focus:ring-2 focus:ring-blue-400"
             />
-            {formik.touched.title && formik.errors.title && (
-              <p className="text-red-700 text-sm">{formik.errors.title}</p>
+            {formik?.touched?.title && formik?.errors?.title && (
+              <p className="text-red-700 text-sm">{formik?.errors?.title}</p>
             )}
           </div>
 
@@ -72,14 +72,14 @@ const CreateNotification = () => {
             <textarea
               placeholder="Description of Notification"
               name="description"
-              value={formik.values.description}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
+              value={formik?.values?.description}
+              onChange={formik?.handleChange}
+              onBlur={formik?.handleBlur}
               className="w-full border rounded-md p-2 mb-4 outline-none focus:ring-2 focus:ring-blue-400"
             />
-            {formik.touched.description && formik.errors.description && (
+            {formik?.touched?.description && formik?.errors?.description && (
               <p className="text-red-700 text-sm">
-                {formik.errors.description}
+                {formik?.errors?.description}
               </p>
             )}
           </div>
@@ -90,13 +90,13 @@ const CreateNotification = () => {
               <input
                 type="date"
                 name="date"
-                value={formik.values.date}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                value={formik?.values?.date}
+                onChange={formik?.handleChange}
+                onBlur={formik?.handleBlur}
                 className="w-[220px] border rounded-xl p-2 pl-10 outline-none focus:ring-2 focus:ring-blue-400"
               />
-              {formik.touched.date && formik.errors.date && (
-                <p className="text-red-700 text-sm">{formik.errors.date}</p>
+              {formik?.touched?.date && formik?.errors?.date && (
+                <p className="text-red-700 text-sm">{formik?.errors?.date}</p>
               )}
             </div>
             <div className="relative">
@@ -104,13 +104,13 @@ const CreateNotification = () => {
               <input
                 type="time"
                 name="time"
-                value={formik.values.time}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                value={formik?.values?.time}
+                onChange={formik?.handleChange}
+                onBlur={formik?.handleBlur}
                 className="w-[220px] border rounded-xl p-2 pl-10 outline-none focus:ring-2 focus:ring-blue-400"
               />
-              {formik.touched.time && formik.errors.time && (
-                <p className="text-red-700 text-sm">{formik.errors.time}</p>
+              {formik?.touched?.time && formik?.errors?.time && (
+                <p className="text-red-700 text-sm">{formik?.errors?.time}</p>
               )}
             </div>
           </div>
@@ -123,9 +123,9 @@ const CreateNotification = () => {
                   type="radio"
                   name="userType"
                   value="winging"
-                  checked={formik.values.userType === "winging"}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  checked={formik?.values?.userType === "winging"}
+                  onChange={formik?.handleChange}
+                  onBlur={formik?.handleBlur}
                   className="form-radio"
                 />
                 Winging Only Users
@@ -135,9 +135,9 @@ const CreateNotification = () => {
                   type="radio"
                   name="userType"
                   value="dating"
-                  checked={formik.values.userType === "dating"}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  checked={formik?.values?.userType === "dating"}
+                  onChange={formik?.handleChange}
+                  onBlur={formik?.handleBlur}
                   className="form-radio"
                 />
                 Dating Plus Winging Users
@@ -147,16 +147,16 @@ const CreateNotification = () => {
                   type="radio"
                   name="userType"
                   value="all"
-                  checked={formik.values.userType === "all"}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
+                  checked={formik?.values?.userType === "all"}
+                  onChange={formik?.handleChange}
+                  onBlur={formik?.handleBlur}
                   className="form-radio"
                 />
                 All Users (Both Categories)
               </label>
             </div>
-            {formik.touched.userType && formik.errors.userType && (
-              <p className="text-red-700 text-sm">{formik.errors.userType}</p>
+            {formik?.touched?.userType && formik?.errors?.userType && (
+              <p className="text-red-700 text-sm">{formik?.errors?.userType}</p>
             )}
           </div>
 

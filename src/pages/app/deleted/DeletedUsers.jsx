@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { FaFilter } from "react-icons/fa";
 import FilterModal from "../../../components/global/FilterModal";
 import { FaSearch } from "react-icons/fa";
-import { useDeletedUsers } from "../../../hooks/api/Get"; // Import the custom hook
+import { useDeletedUsers } from "../../../hooks/api/Get";
 import SkeletonLoader from "../../../components/global/SkeletonLoader";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 const DeletedUsers = () => {
   const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-
-  // const apiUrl = "/admin/user/deactivated";
 
   const { loading, data, pagination } = useDeletedUsers(
     "/admin/user/deactivated",
@@ -30,7 +29,7 @@ const DeletedUsers = () => {
   );
 
   const itemsPerPage = 15;
-  const totalPages = pagination.totalPages || 1;
+  const totalPages = pagination?.totalPages || 1;
 
   const currentData = filteredData.slice(
     (currentPage - 1) * itemsPerPage,
@@ -44,7 +43,7 @@ const DeletedUsers = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   if (loading) {
-    return <SkeletonLoader />; // You can replace this with a loading spinner
+    return <SkeletonLoader />;
   }
 
   return (
@@ -157,20 +156,10 @@ const DeletedUsers = () => {
               onClick={() =>
                 goToPage(currentPage > 1 ? currentPage - 1 : currentPage)
               }
-              className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300 focus:outline-none"
+              className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300"
               aria-label="Previous"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m15 18-6-6 6-6"></path>
-              </svg>
+              <AiOutlineLeft className="text-lg" />
             </button>
 
             <div className="flex items-center space-x-3 bg-[#EDEDED] px-4 py-2 rounded-full">
@@ -197,20 +186,10 @@ const DeletedUsers = () => {
                   currentPage < totalPages ? currentPage + 1 : currentPage
                 )
               }
-              className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300 focus:outline-none"
+              className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300"
               aria-label="Next"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m9 18 6-6-6-6"></path>
-              </svg>
+              <AiOutlineRight className="text-lg" />
             </button>
           </nav>
         </div>

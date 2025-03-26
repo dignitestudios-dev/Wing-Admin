@@ -8,18 +8,15 @@ const UnblockModal = ({ isOpen, onClose, onSubmit }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
       <div className="bg-white p-6 rounded-lg w-[320px] h-[251px] shadow-lg text-center">
-        {/* Warning Icon */}
         <div className="flex justify-center mb-4">
           <IoWarningOutline className="text-yellow-500 text-4xl" />
         </div>
 
-        {/* Title */}
         <h2 className="text-xl font-semibold">Unblock User</h2>
         <p className="text-gray-600 mt-2">
           Are you sure you want to unblock this user?
         </p>
 
-        {/* Buttons */}
         <div className="flex justify-between mt-6 space-x-4">
           <button
             onClick={onClose}

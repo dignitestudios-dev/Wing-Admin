@@ -168,7 +168,7 @@ const useNotifications = (url, currentPage = 1) => {
 
 export { useNotifications };
 
-const useBlockedUsers = (url, currentPage = 1) => {
+const useBlockedUsers = (url, currentPage = 1, update) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState({});
@@ -188,7 +188,7 @@ const useBlockedUsers = (url, currentPage = 1) => {
 
   useEffect(() => {
     getBlockedUsers();
-  }, [currentPage]);
+  }, [currentPage, update]);
 
   return { loading, data, pagination };
 };

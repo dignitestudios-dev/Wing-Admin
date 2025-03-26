@@ -19,11 +19,11 @@ const useLogin = () => {
       setLoading(true);
       const response = await axios.post(url, isFormData ? formdata : data);
       if (typeof callback === "function") {
-        callback(response?.data, navigate); // Call the callback with response data
+        callback(response?.data, navigate);
       }
       return response?.data;
     } catch (error) {
-      processError(error); // Handle errors
+      processError(error);
     } finally {
       setLoading(false);
     }
@@ -50,7 +50,7 @@ const useVerifyOtp = () => {
       const response = await axios.post(url, isFormData ? formdata : data);
 
       if (response?.data) {
-        callback(response?.data, navigate); // Call the callback with response data
+        callback(response?.data, navigate);
       }
       return response?.data;
     } catch (error) {
@@ -72,13 +72,13 @@ const useNotification = () => {
   const postNotificationData = async (url, data, callback) => {
     try {
       setLoading(true);
-      const response = await axios.post(url, data); // Post the notification data
+      const response = await axios.post(url, data);
       if (typeof callback === "function") {
-        callback(response?.data, navigate); // Call the callback with the response data
+        callback(response?.data, navigate);
       }
       return response?.data;
     } catch (error) {
-      processError(error); // Handle errors
+      processError(error);
     } finally {
       setLoading(false);
     }
@@ -88,3 +88,46 @@ const useNotification = () => {
 };
 
 export { useNotification };
+
+const useBlockUser = () => {
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const blockUser = async (url, userData, callback) => {
+    try {
+      setLoading(true);
+      const response = await axios.post(url, userData);
+
+      if (response?.data) {
+        callback(response?.data, navigate);
+      }
+
+      return response?.data;
+    } catch (error) {
+      processError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const unblockUser = async (url, callback) => {
+    try {
+      setLoading(true);
+      const response = await axios.post(url);
+
+      if (response?.data) {
+        callback(response?.data, navigate);
+      }
+
+      return response?.data;
+    } catch (error) {
+      processError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { loading, blockUser, unblockUser };
+};
+
+export { useBlockUser };

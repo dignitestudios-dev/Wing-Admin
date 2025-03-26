@@ -19,11 +19,11 @@ import { processOtp } from "../../lib/utils";
 const VerifyOtp = () => {
   const navigate = useNavigate();
   const { loading, verifyOtp } = useVerifyOtp();
-  const [otp, setOtp] = useState(otpValues.otp); // Use otpValues here
+  const [otp, setOtp] = useState(otpValues.otp);
 
-  const [phone, setPhone] = useState(""); // Store the phone number here
-  const [fcmToken, setFcmToken] = useState(""); // Store the fcmToken here
-  const [deviceIdentity, setDeviceIdentity] = useState(""); // Store the deviceIdentity here
+  const [phone, setPhone] = useState("");
+  const [fcmToken, setFcmToken] = useState("");
+  const [deviceIdentity, setDeviceIdentity] = useState("");
 
   useEffect(() => {
     setPhone(Cookies.get("phone") || "");

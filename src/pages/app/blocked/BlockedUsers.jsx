@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { FaFilter, FaSearch } from "react-icons/fa";
+import { FaFilter, FaHeart, FaSearch } from "react-icons/fa";
 import UnblockModal from "../../../components/global/UnblockModal";
 import FilterModal from "../../../components/global/FilterModal";
 import { useBlockedUsers } from "../../../hooks/api/Get"; // Import the new hook
 import SkeletonLoader from "../../../components/global/SkeletonLoader";
 import { useUnblockUser } from "../../../hooks/api/Delete";
 import { processunblockUser } from "../../../lib/utils";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 const BlockedUsers = () => {
-  const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
   const [isUnblockModalOpen, setIsUnblockModalOpen] = useState(false);
@@ -16,17 +16,26 @@ const BlockedUsers = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [update, setUpdate] = useState(false);
   const { unblockUser, setUnblockUser } = useUnblockUser(setUpdate);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
 
   const {
     loading,
     data: blockedUsers,
     pagination,
-  } = useBlockedUsers("/admin/user/blocked", currentPage, update);
+  } = useBlockedUsers(
+    "/admin/user/blocked",
+    { startDate, endDate },
+    searchInput,
+    currentPage,
+    update
+  );
 
   const handleUnblockClick = (user) => {
     setSelectedUser(user);
     setIsUnblockModalOpen(true);
-    console.log(first);
   };
 
   const handleUnblockSubmit = () => {
@@ -34,10 +43,15 @@ const BlockedUsers = () => {
     unblockUser(`/admin/user/blocked/${selectedUser?._id}`, processunblockUser);
   };
 
-  const totalPages = Math.ceil(blockedUsers.length / 15);
-
   const goToPage = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (pageNumber !== currentPage) {
+      setCurrentPage(pageNumber);
+    }
+  };
+  const handleApplyDates = (startDate, endDate) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setUpdate((prev) => !prev);
   };
 
   if (loading) {
@@ -54,7 +68,7 @@ const BlockedUsers = () => {
           onClick={() => setIsFilterOpen(!isFilterOpen)}
         />
       </div>
-      <div className="w-full flex justify-start items-center gap-0">
+      <div className="w-full flex justify-start items-center gap-0 mb-4">
         <div className="relative w-full">
           <input
             type="text"
@@ -64,13 +78,16 @@ const BlockedUsers = () => {
             placeholder="Search by name or city"
             className="block w-full bg-[#F5F7F7] rounded-md px-3 py-2 pr-12 pl-10 shadow-sm outline-none focus:border-[#5BAFEB] focus:ring focus:ring-red-200 focus:ring-opacity-50"
           />
-          <button className="absolute right-0 top-1/2 transform -translate-y-1/2 active:scale-95 rounded-md bg-[#5BAFEB] px-6 py-2 font-medium text-white outline-none focus:ring focus:ring-red-200 hover:opacity-90">
-            Search
-          </button>
           <FaSearch
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             size={16}
           />
+          <button
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 active:scale-95 rounded-md bg-[#5BAFEB] px-6 py-2 font-medium text-white outline-none focus:ring focus:ring-red-200 hover:opacity-90"
+            onClick={() => setUpdate((prev) => !prev)}
+          >
+            Search
+          </button>
         </div>
       </div>
 
@@ -142,11 +159,14 @@ const BlockedUsers = () => {
                     </td>
                     <td className="px-1 py-2">{user?.state}</td>
                     <td className="px-1 py-2">{user?.city}</td>
-                    <td className="px-6 py-6">{user?.matches}</td>
+                    <td className="px-2 py-6 flex items-center space-x-1">
+                      <FaHeart size={18} className="text-red-500" />
+                      <span>{user?.matches}</span>
+                    </td>
                     <td className="py-4">{user?.role}</td>
                     <td>
                       <button
-                        className="bg-gray-500 text-black p-2 rounded-full"
+                        className="bg-[#F1F1F1] text-[#181818] p-2 rounded-full"
                         onClick={() => handleUnblockClick(user)}
                       >
                         Unblock
@@ -157,6 +177,53 @@ const BlockedUsers = () => {
               )}
             </tbody>
           </table>
+          <nav
+            className="flex items-end justify-end space-x-2 mt-4"
+            aria-label="Pagination"
+          >
+            <button
+              type="button"
+              onClick={() =>
+                goToPage(currentPage > 1 ? currentPage - 1 : currentPage)
+              }
+              className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300"
+              aria-label="Previous"
+            >
+              <AiOutlineLeft className="text-lg" />
+            </button>
+
+            <div className="flex items-center space-x-3 bg-[#EDEDED] px-4 py-2 rounded-full">
+              {Array.from({ length: pagination?.totalPages }, (_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  onClick={() => goToPage(i + 1)}
+                  className={`size-8 flex justify-center items-center rounded-full text-gray-800 transition ${
+                    currentPage === i + 1
+                      ? "bg-blue-500 text-white shadow-md"
+                      : "hover:bg-gray-300"
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              onClick={() =>
+                goToPage(
+                  currentPage < pagination?.totalPages
+                    ? currentPage + 1
+                    : currentPage
+                )
+              }
+              className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300"
+              aria-label="Next"
+            >
+              <AiOutlineRight className="text-lg" />
+            </button>
+          </nav>
         </div>
 
         <UnblockModal
@@ -169,6 +236,7 @@ const BlockedUsers = () => {
       <FilterModal
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
+        onApply={handleApplyDates}
       />
     </div>
   );

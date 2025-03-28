@@ -4,18 +4,35 @@ import Cookies from "js-cookie";
 import { ErrorToast } from "../../components/global/Toaster";
 import { processError } from "../../lib/utils";
 
-const useUsers = (url, currentPage = 1) => {
+const useUsers = (
+  url,
+  filter,
+  currentPage = 1,
+  update,
+  search,
+  age,
+  maxAge,
+  gender
+) => {
+  console.log("filter== ", filter);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState({});
 
   const getUsers = async () => {
     try {
+      let data;
       setLoading(true);
+      // if (filter && Object.values(filter).some((value) => value)) {
+      data = await axios.get(
+        `${url}?startDate=${filter?.startDate}&endDate=${filter?.endDate}&search=${search}&minAge=${age}&maxAge=${maxAge}&gender=${gender}&page=${currentPage}`
+      );
+      // } else {
+      // data = await axios.get(`${url}?page=${currentPage}`);
+      // }
 
-      const { data } = await axios.get(`${url}?page=${currentPage}`);
-      setData(data?.data);
-      setPagination(data?.pagination);
+      setData(data?.data?.data);
+      setPagination(data?.data?.data?.paginationDetails);
     } catch (error) {
       processError(error);
     } finally {
@@ -25,7 +42,7 @@ const useUsers = (url, currentPage = 1) => {
 
   useEffect(() => {
     getUsers();
-  }, [currentPage]);
+  }, [currentPage, update]);
 
   return { loading, data, pagination };
 };
@@ -57,18 +74,20 @@ const useDashboardData = () => {
 
 export { useDashboardData };
 
-const useReports = (url, currentPage = 1) => {
+const useReports = (url, filter, search, currentPage = 1, update) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState({});
 
   const getReports = async () => {
     try {
+      let data;
       setLoading(true);
-
-      const { data } = await axios.get(`${url}?page=${currentPage}`);
-      setData(data?.data?.data);
-      setPagination(data?.data?.paginationDetails);
+      data = await axios.get(
+        `${url}?startDate=${filter?.startDate}&endDate=${filter?.endDate}&search=${search}&page=${currentPage}`
+      );
+      setData(data?.data?.data?.data);
+      setPagination(data?.data?.data?.paginationDetails);
     } catch (error) {
       console.error("Error fetching reports:", error);
     } finally {
@@ -78,24 +97,27 @@ const useReports = (url, currentPage = 1) => {
 
   useEffect(() => {
     getReports();
-  }, [currentPage]);
+  }, [currentPage, update]);
 
   return { loading, data, pagination };
 };
 
 export { useReports };
 
-const useDeletedUsers = (url, currentPage = 1) => {
+const useDeletedUsers = (url, filter, search, currentPage = 1, update) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState({});
 
   const getDeletedUsers = async () => {
     try {
+      let data;
       setLoading(true);
-      const response = await axios.get(`${url}?page=${currentPage}`);
-      setData(response?.data?.data?.data);
-      setPagination(response?.data?.data?.paginationDetails);
+      data = await axios.get(
+        `${url}?startDate=${filter?.startDate}&endDate=${filter?.endDate}&search=${search}&page=${currentPage}`
+      );
+      setData(data?.data?.data?.data);
+      setPagination(data?.data?.data?.paginationDetails);
     } catch (error) {
       processError(error);
     } finally {
@@ -105,25 +127,28 @@ const useDeletedUsers = (url, currentPage = 1) => {
 
   useEffect(() => {
     getDeletedUsers();
-  }, [currentPage]);
+  }, [currentPage, update]);
 
   return { loading, data, pagination };
 };
 
 export { useDeletedUsers };
 
-const useLocationData = () => {
+const useLocationData = (url, filter, update) => {
   const [loading, setLoading] = useState(false);
   const [topLocations, setTopLocations] = useState([]);
   const [bottomLocations, setBottomLocations] = useState([]);
 
   const getLocationData = async () => {
     try {
+      let data;
       setLoading(true);
-      const response = await axios.get("/admin/location");
-      if (response?.data?.success) {
-        setTopLocations(response?.data?.data?.top10 || []);
-        setBottomLocations(response?.data?.data?.bottom10 || []);
+      data = await axios.get(
+        `${url}?startDate=${filter?.startDate}&endDate=${filter?.endDate}`
+      );
+      if (data?.data?.success) {
+        setTopLocations(data?.data?.data?.top10 || []);
+        setBottomLocations(data?.data?.data?.bottom10 || []);
       }
     } catch (error) {
       processError(error);
@@ -134,23 +159,27 @@ const useLocationData = () => {
 
   useEffect(() => {
     getLocationData();
-  }, []);
+  }, [update]);
 
   return { loading, topLocations, bottomLocations };
 };
 
 export { useLocationData };
 
-const useNotifications = (url, currentPage = 1) => {
+const useNotifications = (url, filter, search, currentPage = 1, update) => {
+  console.log(filter, search, "filter and search");
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState({});
 
   const getNotifications = async () => {
     try {
+      let data;
       setLoading(true);
-      const { data } = await axios.get(`${url}?page=${currentPage}`);
-      setData(data?.data);
+      data = await axios.get(
+        `${url}?startDate=${filter?.startDate}&endDate=${filter?.endDate}&search=${search}&page=${currentPage}`
+      );
+      setData(data?.data?.data);
       setPagination(data?.pagination || {});
     } catch (error) {
       processError(error);
@@ -161,24 +190,27 @@ const useNotifications = (url, currentPage = 1) => {
 
   useEffect(() => {
     getNotifications();
-  }, [currentPage]);
+  }, [currentPage, update]);
 
   return { loading, data, pagination };
 };
 
 export { useNotifications };
 
-const useBlockedUsers = (url, currentPage = 1, update) => {
+const useBlockedUsers = (url, filter, search, currentPage = 1, update) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState({});
 
   const getBlockedUsers = async () => {
     try {
+      let data;
       setLoading(true);
-      const { data } = await axios.get(`${url}?page=${currentPage}`);
-      setData(data?.data?.data || []);
-      setPagination(data?.data?.paginationDetails || {});
+      data = await axios.get(
+        `${url}?startDate=${filter?.startDate}&endDate=${filter?.endDate}&search=${search}&page=${currentPage}`
+      );
+      setData(data?.data?.data?.data || []);
+      setPagination(data?.data?.data?.paginationDetails || {});
     } catch (error) {
       processError(error);
     } finally {
@@ -194,3 +226,34 @@ const useBlockedUsers = (url, currentPage = 1, update) => {
 };
 
 export { useBlockedUsers };
+
+const useMatches = (url, filter, search, currentPage = 1, update) => {
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+  const [pagination, setPagination] = useState({});
+
+  const getMatches = async () => {
+    try {
+      let data;
+      setLoading(true);
+      data = await axios.get(
+        `${url}?startDate=${filter?.startDate}&endDate=${filter?.endDate}&search=${search}&page=${currentPage}`
+      );
+
+      setData(data?.data?.data);
+      setPagination(data?.data?.data?.paginationDetails);
+    } catch (error) {
+      processError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getMatches();
+  }, [currentPage, update]);
+
+  return { loading, data, pagination };
+};
+
+export { useMatches };

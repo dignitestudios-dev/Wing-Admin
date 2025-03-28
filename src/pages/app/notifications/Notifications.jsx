@@ -4,17 +4,39 @@ import { useNavigate } from "react-router";
 import { useNotifications } from "../../../hooks/api/Get";
 import FilterModal from "../../../components/global/FilterModal";
 import SkeletonLoader from "../../../components/global/SkeletonLoader";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 const Notifications = () => {
-  const [searchInput, setSearchInput] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [update, setUpdate] = useState(false);
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+
   const navigate = useNavigate();
 
-  const { loading, data, pagination } = useNotifications("/admin/notification");
-
-  const filteredNotifications = data.filter((notification) =>
-    notification.title.toLowerCase().includes(searchInput.toLowerCase())
+  const { loading, data, pagination } = useNotifications(
+    "/admin/notification",
+    { startDate, endDate },
+    searchInput,
+    currentPage,
+    update
   );
+
+  const goToPage = (pageNumber) => {
+    if (pageNumber !== currentPage) {
+      setCurrentPage(pageNumber);
+    }
+  };
+
+  const handleApplyDates = (startDate, endDate) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setUpdate((prev) => !prev);
+  };
 
   if (loading) {
     return <SkeletonLoader />;
@@ -47,16 +69,19 @@ const Notifications = () => {
             id="name"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search by title"
+            placeholder="Search by name or city"
             className="block w-full bg-[#F5F7F7] rounded-md px-3 py-2 pr-12 pl-10 shadow-sm outline-none focus:border-[#5BAFEB] focus:ring focus:ring-red-200 focus:ring-opacity-50"
           />
-          <button className="absolute right-0 top-1/2 transform -translate-y-1/2 active:scale-95 rounded-md bg-[#5BAFEB] px-6 py-2 font-medium text-white outline-none focus:ring focus:ring-red-200 hover:opacity-90">
-            Search
-          </button>
           <FaSearch
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             size={16}
           />
+          <button
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 active:scale-95 rounded-md bg-[#5BAFEB] px-6 py-2 font-medium text-white outline-none focus:ring focus:ring-red-200 hover:opacity-90"
+            onClick={() => setUpdate((prev) => !prev)}
+          >
+            Search
+          </button>
         </div>
       </div>
 
@@ -80,14 +105,14 @@ const Notifications = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredNotifications?.length === 0 ? (
+            {data?.length === 0 ? (
               <tr>
                 <td colSpan="4" className="text-center py-4 text-gray-500">
                   No notifications found
                 </td>
               </tr>
             ) : (
-              filteredNotifications.map((notification, index) => (
+              data?.map((notification, index) => (
                 <tr key={notification?._id} className="border-b">
                   <td className="p-8">{index + 1}</td>
                   <td className="p-2 font-medium">{notification?.title}</td>
@@ -110,11 +135,59 @@ const Notifications = () => {
             )}
           </tbody>
         </table>
+        {/* <nav
+          className="flex items-end justify-end space-x-2 mt-4"
+          aria-label="Pagination"
+        >
+          <button
+            type="button"
+            onClick={() =>
+              goToPage(currentPage > 1 ? currentPage - 1 : currentPage)
+            }
+            className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300"
+            aria-label="Previous"
+          >
+            <AiOutlineLeft className="text-lg" />
+          </button>
+
+          <div className="flex items-center space-x-3 bg-[#EDEDED] px-4 py-2 rounded-full">
+            {Array.from({ length: pagination?.totalPages }, (_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => goToPage(i + 1)}
+                className={`size-8 flex justify-center items-center rounded-full text-gray-800 transition ${
+                  currentPage === i + 1
+                    ? "bg-blue-500 text-white shadow-md"
+                    : "hover:bg-gray-300"
+                }`}
+              >
+                {i + 1}
+              </button>
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() =>
+              goToPage(
+                currentPage < pagination?.totalPages
+                  ? currentPage + 1
+                  : currentPage
+              )
+            }
+            className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300"
+            aria-label="Next"
+          >
+            <AiOutlineRight className="text-lg" />
+          </button>
+        </nav> */}
       </div>
 
       <FilterModal
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
+        onApply={handleApplyDates}
       />
     </div>
   );

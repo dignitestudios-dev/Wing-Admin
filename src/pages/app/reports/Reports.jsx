@@ -9,9 +9,13 @@ import { useBlockUser } from "../../../hooks/api/Post";
 import { processblockUser } from "../../../lib/utils";
 
 const Reports = () => {
-  const [searchInput, setSearchInput] = useState("");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [update, setUpdate] = useState(false);
+  const [startDate, setStartDate] = useState("");
+
+  const [endDate, setEndDate] = useState("");
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
 
   const { blockUser, unblockUser } = useBlockUser(setUpdate);
 
@@ -20,31 +24,18 @@ const Reports = () => {
     loading,
     data: reports,
     pagination,
-  } = useReports("/admin/user/reported", currentPage, update);
-
-  console.log(reports, "reports");
-  const itemsPerPage = 15;
-  const totalPages = Math.ceil(pagination?.totalItems / itemsPerPage);
-
-  const filteredReports = reports.filter(
-    (item) =>
-      item?.reportedUser?.name
-        .toLowerCase()
-        .includes(searchInput.toLowerCase()) ||
-      item?.reportedUser?.phone
-        .toLowerCase()
-        .includes(searchInput.toLowerCase()) ||
-      item?.user?.name?.toLowerCase().includes(searchInput.toLowerCase()) ||
-      item?.user?.phone?.toLowerCase().includes(searchInput.toLowerCase())
-  );
-
-  const currentReports = filteredReports.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+  } = useReports(
+    "/admin/user/reported",
+    { startDate, endDate },
+    searchInput,
+    currentPage,
+    update
   );
 
   const goToPage = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (pageNumber !== currentPage) {
+      setCurrentPage(pageNumber);
+    }
   };
 
   const handleBlockClick = (user) => {
@@ -61,6 +52,13 @@ const Reports = () => {
 
     setIsBlockModalOpen(false);
     blockUser("/admin/user/blocked", requestData, processblockUser);
+  };
+
+  // Callback to update the selected dates
+  const handleApplyDates = (startDate, endDate) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setUpdate((prev) => !prev);
   };
 
   const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
@@ -85,18 +83,22 @@ const Reports = () => {
         <div className="relative w-full">
           <input
             type="text"
+            id="name"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="Search by name or phone"
-            className="block w-full bg-[#F5F7F7] rounded-md px-3 py-2 pr-12 pl-10 shadow-sm outline-none focus:border-[#5BAFEB] focus:ring"
+            placeholder="Search by name or city"
+            className="block w-full bg-[#F5F7F7] rounded-md px-3 py-2 pr-12 pl-10 shadow-sm outline-none focus:border-[#5BAFEB] focus:ring focus:ring-red-200 focus:ring-opacity-50"
           />
-          <button className="absolute right-0 top-1/2 transform -translate-y-1/2 active:scale-95 rounded-md bg-[#5BAFEB] px-6 py-2 font-medium text-white outline-none">
-            Search
-          </button>
           <FaSearch
             className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
             size={16}
           />
+          <button
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 active:scale-95 rounded-md bg-[#5BAFEB] px-6 py-2 font-medium text-white outline-none focus:ring focus:ring-red-200 hover:opacity-90"
+            onClick={() => setUpdate((prev) => !prev)}
+          >
+            Search
+          </button>
         </div>
       </div>
 
@@ -116,7 +118,7 @@ const Reports = () => {
             </tr>
           </thead>
           <tbody>
-            {currentReports.map((item, key) => (
+            {reports?.map((item, key) => (
               <tr key={key}>
                 <td className="px-6 py-4">
                   <div className="flex gap-3 items-center">
@@ -182,7 +184,7 @@ const Reports = () => {
           </button>
 
           <div className="flex items-center space-x-3 bg-[#EDEDED] px-4 py-2 rounded-full">
-            {Array.from({ length: totalPages }, (_, i) => (
+            {Array.from({ length: pagination?.totalPages }, (_, i) => (
               <button
                 key={i}
                 type="button"
@@ -201,7 +203,11 @@ const Reports = () => {
           <button
             type="button"
             onClick={() =>
-              goToPage(currentPage < totalPages ? currentPage + 1 : currentPage)
+              goToPage(
+                currentPage < pagination?.totalPages
+                  ? currentPage + 1
+                  : currentPage
+              )
             }
             className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300"
             aria-label="Next"
@@ -214,6 +220,7 @@ const Reports = () => {
       <FilterModal
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
+        onApply={handleApplyDates}
       />
       <BlockModal
         isOpen={isBlockModalOpen}

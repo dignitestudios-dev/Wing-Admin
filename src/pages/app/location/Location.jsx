@@ -6,8 +6,22 @@ import { useLocationData } from "../../../hooks/api/Get";
 import SkeletonLoader from "../../../components/global/SkeletonLoader";
 
 const Location = () => {
-  const { loading, topLocations, bottomLocations } = useLocationData();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [update, setUpdate] = useState(false);
+
+  const { loading, topLocations, bottomLocations } = useLocationData(
+    "/admin/location",
+    { startDate, endDate },
+    update
+  );
+  // Callback to update the selected dates
+  const handleApplyDates = (startDate, endDate) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setUpdate((prev) => !prev);
+  };
 
   if (loading) {
     return <SkeletonLoader />;
@@ -107,6 +121,7 @@ const Location = () => {
         <FilterModal
           isOpen={isFilterOpen}
           onClose={() => setIsFilterOpen(false)}
+          onApply={handleApplyDates}
         />
       </div>
     </>

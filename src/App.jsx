@@ -8,7 +8,7 @@ import "./App.css";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/auth/login" />} />
+      <Route path="/" element={<Navigate to="auth/login" />} />
       <Route path="app" element={<DashboardLayout />}>
         {normalRoutes.map((route) => {
           return (

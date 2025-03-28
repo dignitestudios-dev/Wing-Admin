@@ -7,12 +7,20 @@ import SkeletonLoader from "../../../components/global/SkeletonLoader";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
 
 const DeletedUsers = () => {
-  const [searchInput, setSearchInput] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [update, setUpdate] = useState(false);
+  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const { loading, data, pagination } = useDeletedUsers(
     "/admin/user/deactivated",
-    currentPage
+    { startDate, endDate },
+    searchInput,
+    currentPage,
+    update
   );
   const convertDate = (dateIso) => {
     const date = new Date(dateIso);
@@ -22,25 +30,18 @@ const DeletedUsers = () => {
     return `${month}/${day}/${year}`;
   };
 
-  const filteredData = data?.filter(
-    (reason) =>
-      reason.name?.toLowerCase().includes(searchInput.toLowerCase()) ||
-      reason.phone?.toLowerCase().includes(searchInput.toLowerCase())
-  );
-
-  const itemsPerPage = 15;
-  const totalPages = pagination?.totalPages || 1;
-
-  const currentData = filteredData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
   const goToPage = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    if (pageNumber !== currentPage) {
+      setCurrentPage(pageNumber);
+    }
   };
 
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  // Callback to update the selected dates
+  const handleApplyDates = (startDate, endDate) => {
+    setStartDate(startDate);
+    setEndDate(endDate);
+    setUpdate((prev) => !prev);
+  };
 
   if (loading) {
     return <SkeletonLoader />;
@@ -110,7 +111,7 @@ const DeletedUsers = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {currentData.map((reason, key) => (
+              {data.map((reason, key) => (
                 <tr key={key}>
                   <th className="px-6 lg:px-4 xl:px-0 flex gap-3 py-4 font-normal text-black">
                     <div className="relative h-10 w-10">
@@ -163,7 +164,7 @@ const DeletedUsers = () => {
             </button>
 
             <div className="flex items-center space-x-3 bg-[#EDEDED] px-4 py-2 rounded-full">
-              {Array.from({ length: totalPages }, (_, i) => (
+              {Array.from({ length: pagination?.totalPages }, (_, i) => (
                 <button
                   key={i}
                   type="button"
@@ -183,7 +184,9 @@ const DeletedUsers = () => {
               type="button"
               onClick={() =>
                 goToPage(
-                  currentPage < totalPages ? currentPage + 1 : currentPage
+                  currentPage < pagination?.totalPages
+                    ? currentPage + 1
+                    : currentPage
                 )
               }
               className="size-11 flex justify-center items-center bg-[#EDEDED] rounded-full text-gray-800 hover:bg-gray-300"
@@ -198,6 +201,7 @@ const DeletedUsers = () => {
       <FilterModal
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
+        onApply={handleApplyDates}
       />
     </>
   );

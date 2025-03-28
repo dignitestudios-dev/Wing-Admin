@@ -75,10 +75,10 @@ const TotalMatches = () => {
         grid: { display: false },
       },
       y: {
-        min: 0, // Set min to zero for y-axis
+        min: 0,
         ticks: {
           beginAtZero: true,
-          stepSize: 5, // Adjust step size if required
+          stepSize: 5,
         },
         grid: { color: "#E5E7EB" },
       },
@@ -113,7 +113,6 @@ const TotalMatches = () => {
         </div>
       </div>
 
-      {/* Render the chart */}
       <div style={{ height: "300px" }}>
         <Line data={chartData} options={options} />
       </div>

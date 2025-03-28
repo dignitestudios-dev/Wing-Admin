@@ -88,7 +88,7 @@ const VerifyOtp = () => {
           {otp.map((item, index) => (
             <input
               key={index}
-              className="flex-1 min-w-[50px] max-w-[66px] h-[60px] rounded-xl bg-transparent outline-none text-center border border-[#c2c6cb] text-3xl focus:bg-[#D0FCB333] focus-within:border-[#55C9FA]"
+              className="flex-1 min-w-[50px] max-w-[66px] h-[60px] rounded-xl bg-transparent outline-none text-center border border-[#5BAFEB] text-3xl focus:bg-[#cbe9ff] focus-within:border-[#55C9FA]"
               maxLength={1}
               value={item}
               onChange={(e) => handleOtpChange(e, index)}

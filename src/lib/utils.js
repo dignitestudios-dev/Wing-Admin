@@ -57,7 +57,6 @@ export const processunblockUser = (data, navigate , setUpdate) => {
 
 
 export const processError = (error) => {
-  console.log('error', error);
   if (error?.response?.data?.message) {
     ErrorToast(error?.response?.data?.message);
     return;

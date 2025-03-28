@@ -89,7 +89,7 @@ const useNotification = () => {
 
 export { useNotification };
 
-const useBlockUser = () => {
+const useBlockUser = (setUpdate) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -99,12 +99,13 @@ const useBlockUser = () => {
       const response = await axios.post(url, userData);
 
       if (response?.data) {
-        callback(response?.data, navigate);
+        callback(response?.data, navigate, setUpdate);
       }
 
       return response?.data;
     } catch (error) {
       processError(error);
+      console.log(error, "error in block user");
     } finally {
       setLoading(false);
     }

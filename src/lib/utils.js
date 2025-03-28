@@ -71,7 +71,7 @@ export const processError = (error) => {
 export const processNotification = (data, navigate) => {
   if (data?.success) {
     SuccessToast("Notification created successfully");
-    navigate("app/notifications");
+    // navigate("app/notifications");
   } else {
     ErrorToast("Notification creation failed. Please try again.");
   }

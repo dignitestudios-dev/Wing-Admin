@@ -14,7 +14,7 @@ const Navbar = () => {
       <div className="flex items-center gap-6 py-4 font-normal text-gray-900">
         <div className="relative"></div>
 
-        <button className="flex items-center gap-2 relative">
+        {/* <button className="flex items-center gap-2 relative">
           <img
             src={"https://i.pravatar.cc/?img=12"}
             alt="Profile"
@@ -26,7 +26,7 @@ const Navbar = () => {
             </p>
             <p className="text-[11px] font-medium text-[#074F57]"></p>
           </div>
-        </button>
+        </button> */}
       </div>
     </div>
   );

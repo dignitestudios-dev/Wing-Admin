@@ -11,5 +11,5 @@ export const createNotificationValues = {
   description: "",
   date: "",
   time: "",
-  userType: "all",
+  userType: "both",
 };

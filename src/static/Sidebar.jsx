@@ -59,10 +59,4 @@ export const sidebarData = [
   //   icon: <MdLockOpen />,
   //   link: "/app/updatepassword",
   // },
-
-  {
-    title: "Logout",
-    icon: <IoLogOutOutline />,
-    link: "/",
-  },
 ];

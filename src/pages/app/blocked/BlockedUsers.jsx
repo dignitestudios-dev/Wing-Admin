@@ -7,6 +7,7 @@ import SkeletonLoader from "../../../components/global/SkeletonLoader";
 import { useUnblockUser } from "../../../hooks/api/Delete";
 import { processunblockUser } from "../../../lib/utils";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { MdArrowDropDown, MdArrowDropUp } from "react-icons/md";
 
 const BlockedUsers = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -20,6 +21,11 @@ const BlockedUsers = () => {
   const [endDate, setEndDate] = useState("");
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [genderDropdownOpen, setGenderDropdownOpen] = useState(false);
+  const [gender, setGender] = useState("");
+  const [ageStart, setAgeStart] = useState("");
+  const [ageEnd, setAgeEnd] = useState("");
 
   const {
     loading,
@@ -28,9 +34,12 @@ const BlockedUsers = () => {
   } = useBlockedUsers(
     "/admin/user/blocked",
     { startDate, endDate },
-    searchInput,
     currentPage,
-    update
+    update,
+    searchInput,
+    ageStart,
+    ageEnd,
+    gender
   );
 
   const handleUnblockClick = (user) => {
@@ -51,6 +60,28 @@ const BlockedUsers = () => {
   const handleApplyDates = (startDate, endDate) => {
     setStartDate(startDate);
     setEndDate(endDate);
+    setUpdate((prev) => !prev);
+  };
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleDropdowngender = () => {
+    setGenderDropdownOpen(!genderDropdownOpen);
+  };
+
+  const handleSelectAge = (value) => {
+    const [start, end] = value.split("-");
+    setAgeStart(start);
+    setAgeEnd(end);
+    setIsDropdownOpen(false);
+    setUpdate((prev) => !prev);
+  };
+
+  const handleSelectGender = (value) => {
+    setGender(value);
+    setGenderDropdownOpen(false);
     setUpdate((prev) => !prev);
   };
 
@@ -99,11 +130,71 @@ const BlockedUsers = () => {
                 <th className="lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80] min-w-[110px]">
                   Name
                 </th>
-                <th className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80]">
-                  Age
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80] cursor-pointer relative"
+                  onClick={handleDropdownToggle}
+                >
+                  <span className="ml-1 flex">
+                    Age
+                    {isDropdownOpen ? (
+                      <MdArrowDropUp size={18} />
+                    ) : (
+                      <MdArrowDropDown size={18} />
+                    )}
+                  </span>
+                  {isDropdownOpen && (
+                    <div className="absolute bg-white border border-[#0A150F80] rounded-lg mt-2 w-40 shadow-lg z-10">
+                      <ul className="py-2">
+                        {[
+                          "18-24",
+                          "25-34",
+                          "35-44",
+                          "45-54",
+                          "55-64",
+                          "65-74",
+                          "75",
+                        ].map((range) => (
+                          <li
+                            key={range}
+                            className="px-4 py-2 text-[#0A150F80] hover:bg-[#f3f3f3] cursor-pointer"
+                            onClick={() => handleSelectAge(range)}
+                          >
+                            {range === "75" ? "75+" : range}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </th>
-                <th className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80]">
-                  Gender
+                <th
+                  scope="col"
+                  className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80] cursor-pointer relative"
+                  onClick={handleDropdowngender}
+                >
+                  <span className="ml-1 flex">
+                    Gender
+                    {genderDropdownOpen ? (
+                      <MdArrowDropUp size={18} />
+                    ) : (
+                      <MdArrowDropDown size={18} />
+                    )}
+                  </span>
+                  {genderDropdownOpen && (
+                    <div className="absolute bg-white border border-[#0A150F80] rounded-lg mt-2 w-40 shadow-lg z-10">
+                      <ul className="py-2">
+                        {["male", "female", "other"].map((gender) => (
+                          <li
+                            key={gender}
+                            className="px-4 py-2 text-[#0A150F80] hover:bg-[#f3f3f3] cursor-pointer"
+                            onClick={() => handleSelectGender(gender)}
+                          >
+                            {gender}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </th>
                 <th className="px-6 lg:px-4 xl:px-0 py-4 text-[11px] text-[#0A150F80]">
                   Created At

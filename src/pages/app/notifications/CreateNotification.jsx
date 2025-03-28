@@ -146,8 +146,8 @@ const CreateNotification = () => {
                 <input
                   type="radio"
                   name="userType"
-                  value="all"
-                  checked={formik?.values?.userType === "all"}
+                  value="both"
+                  checked={formik?.values?.userType === "both"}
                   onChange={formik?.handleChange}
                   onBlur={formik?.handleBlur}
                   className="form-radio"

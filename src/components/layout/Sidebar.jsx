@@ -3,6 +3,9 @@ import { NavLink, useNavigate } from "react-router";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { RiLogoutCircleLine, RiMenuLine, RiCloseLine } from "react-icons/ri";
 import { sidebarData } from "../../static/Sidebar";
+import { IoLogOutOutline } from "react-icons/io5";
+import Cookies from "js-cookie";
+
 import { Logo } from "../../assets/export";
 
 const Sidebar = () => {
@@ -19,9 +22,8 @@ const Sidebar = () => {
   };
 
   const handleLogout = () => {
-    // Implement logout logic here, like clearing session or token
-    localStorage.removeItem("token");
-    navigate("/login");
+    Cookies.remove("authToken"); // Remove authToken from cookies
+    navigate("/auth/login"); // Redirect to login page
   };
 
   return (
@@ -38,6 +40,7 @@ const Sidebar = () => {
           isDrawerOpen ? "translate-x-0" : "-translate-x-full"
         } lg:translate-x-0 z-40 min-h-screen h-full overflow-y-auto`}
       >
+        {/* Uncomment if logo is needed */}
         {/* <div className="flex justify-left items-left pl-2 w-full">
           <NavLink to="/">
             <img src={Logo} alt="logo" className="h-[100px]" />
@@ -67,6 +70,13 @@ const Sidebar = () => {
                 </NavLink>
               </li>
             ))}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-3 px-8 py-3 w-full rounded-2xl text-black"
+            >
+              <IoLogOutOutline size={20} />
+              <span className="text-[11px] font-medium text-black">Logout</span>
+            </button>
           </ul>
         </div>
       </div>

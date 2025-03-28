@@ -197,7 +197,16 @@ const useNotifications = (url, filter, search, currentPage = 1, update) => {
 
 export { useNotifications };
 
-const useBlockedUsers = (url, filter, search, currentPage = 1, update) => {
+const useBlockedUsers = (
+  url,
+  filter,
+  currentPage = 1,
+  update,
+  search,
+  age,
+  maxAge,
+  gender
+) => {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState({});
@@ -207,7 +216,7 @@ const useBlockedUsers = (url, filter, search, currentPage = 1, update) => {
       let data;
       setLoading(true);
       data = await axios.get(
-        `${url}?startDate=${filter?.startDate}&endDate=${filter?.endDate}&search=${search}&page=${currentPage}`
+        `${url}?startDate=${filter?.startDate}&endDate=${filter?.endDate}&search=${search}&minAge=${age}&maxAge=${maxAge}&gender=${gender}&page=${currentPage}`
       );
       setData(data?.data?.data?.data || []);
       setPagination(data?.data?.data?.paginationDetails || {});

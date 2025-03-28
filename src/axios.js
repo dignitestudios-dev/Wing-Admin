@@ -4,21 +4,20 @@ import Cookies from "js-cookie";
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 export const baseUrl = "https://api.wingxapp.com";
-// export const baseUrl = "https://155e-45-199-187-86.ngrok-free.app";
-// export const baseUrl = "https://necessi.erdumadnan.com/api";
+
 
 async function getDeviceFingerprint() {
-  const fp = await FingerprintJS.load();
-  const result = await fp.get();
-  console.log(result.visitorId); // Unique device ID
-  return result.visitorId;
+  // const fp = await FingerprintJS.load();
+  // const result = await fp.get();
+  // console.log(result.visitorId); // Unique device ID
+  // return result.visitorId;
 }
 
 const instance = axios.create({
   baseURL: baseUrl,
   headers: {
-    devicemodel: await getDeviceFingerprint(),
-    deviceuniqueid: await getDeviceFingerprint(),
+    // devicemodel: await getDeviceFingerprint(),
+    // deviceuniqueid: await getDeviceFingerprint(),
   },
   timeout: 10000, // 10 seconds timeout
 });

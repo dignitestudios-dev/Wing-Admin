@@ -32,6 +32,11 @@ const FilterModal = ({ isOpen, onClose, onApply }) => {
     setIsSecondModalOpen(false);
   };
 
+  const handleClearClick = () => {
+    setSelectedDate("Select Date");
+    setSelectedSecondDate("Select Date");
+  };
+
   useEffect(() => {
     if (isOpen) {
       const button = document.getElementById("filter-button");
@@ -98,7 +103,10 @@ const FilterModal = ({ isOpen, onClose, onApply }) => {
 
       {/* Buttons */}
       <div className="flex gap-2">
-        <button className="w-1/2 px-4 py-2 bg-gray-300 text-gray-700 dark:text-white rounded-lg">
+        <button
+          className="w-1/2 px-4 py-2 bg-gray-300 text-gray-700 dark:text-white rounded-lg"
+          onClick={handleClearClick}
+        >
           Clear
         </button>
         <button

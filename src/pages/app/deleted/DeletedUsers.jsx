@@ -111,40 +111,48 @@ const DeletedUsers = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {data.map((reason, key) => (
-                <tr key={key}>
-                  <th className="px-6 lg:px-4 xl:px-0 flex gap-3 py-4 font-normal text-black">
-                    <div className="relative h-10 w-10">
-                      <img
-                        className="h-full w-full rounded-full object-cover object-center"
-                        src={
-                          reason?.profilePicture ||
-                          "https://randomuser.me/api/portraits/men/1.jpg"
-                        }
-                        alt="Profile"
-                      />
-                    </div>
-                    <div className="text-sm">
-                      <div className="font-medium text-black">
-                        {reason?.name || "Unknown User"}
-                      </div>
-                      <div className="text-gray-400">{reason?.phone}</div>
-                    </div>
-                  </th>
-                  <td className="px-6 lg:px-4 xl:px-0 py-4 text-black capitalize">
-                    {reason?.isDelete ? "Deleted" : "Deactivated"}
-                  </td>
-                  <td className="px-6 lg:px-4 xl:px-0 py-4 text-black capitalize max-w-xs overflow-hidden h-12">
-                    <p className="line-clamp-3">
-                      {reason?.bio || "No reason provided"}
-                    </p>
-                  </td>
-
-                  <td className="px-6 lg:px-4 xl:px-0 py-4 text-black font-normal">
-                    {convertDate(reason?.updatedAt)}
+              {data.length === 0 ? (
+                <tr>
+                  <td colSpan={9} className="text-center py-4">
+                    No blocked users found
                   </td>
                 </tr>
-              ))}
+              ) : (
+                data.map((reason, key) => (
+                  <tr key={key}>
+                    <th className="px-6 lg:px-4 xl:px-0 flex gap-3 py-4 font-normal text-black">
+                      <div className="relative h-10 w-10">
+                        <img
+                          className="h-full w-full rounded-full object-cover object-center"
+                          src={
+                            reason?.profilePicture ||
+                            "https://randomuser.me/api/portraits/men/1.jpg"
+                          }
+                          alt="Profile"
+                        />
+                      </div>
+                      <div className="text-sm">
+                        <div className="font-medium text-black">
+                          {reason?.name || "Unknown User"}
+                        </div>
+                        <div className="text-gray-400">{reason?.phone}</div>
+                      </div>
+                    </th>
+                    <td className="px-6 lg:px-4 xl:px-0 py-4 text-black capitalize">
+                      {reason?.isDelete ? "Deleted" : "Deactivated"}
+                    </td>
+                    <td className="px-6 lg:px-4 xl:px-0 py-4 text-black capitalize max-w-xs overflow-hidden h-12">
+                      <p className="line-clamp-3">
+                        {reason?.bio || "No reason provided"}
+                      </p>
+                    </td>
+
+                    <td className="px-6 lg:px-4 xl:px-0 py-4 text-black font-normal">
+                      {convertDate(reason?.updatedAt)}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
 

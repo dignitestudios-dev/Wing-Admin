@@ -153,14 +153,13 @@ const BlockedUsers = () => {
                           "45-54",
                           "55-64",
                           "65-74",
-                          "75",
                         ].map((range) => (
                           <li
                             key={range}
                             className="px-4 py-2 text-[#0A150F80] hover:bg-[#f3f3f3] cursor-pointer"
                             onClick={() => handleSelectAge(range)}
                           >
-                            {range === "75" ? "75+" : range}
+                            {range}
                           </li>
                         ))}
                       </ul>
@@ -246,7 +245,7 @@ const BlockedUsers = () => {
                     <td className="px-1 py-2">{user?.gender}</td>
                     <td className="px-1 py-2">
                       {" "}
-                      {new Date(user.createdAt).toLocaleDateString("en-US")}
+                      {new Date(user?.createdAt).toLocaleDateString("en-US")}
                     </td>
                     <td className="px-1 py-2">{user?.state}</td>
                     <td className="px-1 py-2">{user?.city}</td>

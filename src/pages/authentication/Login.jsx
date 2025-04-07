@@ -36,18 +36,14 @@ const Login = () => {
         className="w-full lg:w-1/2 h-full bg-white p-8 lg:p-20 flex flex-col justify-start items-start gap-8"
       >
         <div className="flex justify-left items-left mr-14 w-full">
-          <img
-            src={Logo}
-            alt="logo"
-            className="h-[124px] W-[124px] hidden lg:block"
-          />
+          <img src={Logo} alt="logo" className="h-[124px] W-[124px]" />
         </div>
 
-        <h1 className="text-left text-4xl font-bold text-black ml-8">Log in</h1>
-        <span className="text-[14px] text-[#868686] ml-8 -mt-6">
+        <h1 className="text-left text-4xl font-bold text-black ">Log in</h1>
+        <span className="text-[14px] text-[#868686] -mt-6">
           Enter your phone number below to log in
         </span>
-        <div className="flex flex-col w-full h-auto justify-start items-start gap-4 ml-8 ">
+        <div className="flex flex-col w-full h-auto justify-start items-start gap-4 ">
           <AuthInput
             id="phone"
             text={"Phone"}
@@ -64,13 +60,13 @@ const Login = () => {
             <p className="text-red-700 text-sm font-medium">{errors.phone}</p>
           )} */}
         </div>
-        <div className="ml-8">
+        <div className=" w-[70%]">
           <AuthSubmitBtn text={"Next"} loading={loading} />
         </div>
       </form>
 
       <div className="hidden lg:flex flex-col justify-center items-center w-1/2 h-full relative">
-        <div className="relative flex justify-center items-center h-full mb-28">
+        <div className="hidden relative lg:flex justify-center items-center h-full mb-28">
           <img
             src={LoginImage}
             alt="login_mockup"

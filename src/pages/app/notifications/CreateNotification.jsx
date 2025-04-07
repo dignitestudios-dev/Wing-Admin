@@ -96,9 +96,12 @@ const CreateNotification = () => {
                 className="w-[220px] border rounded-xl p-2 pl-10 outline-none focus:ring-2 focus:ring-blue-400"
               />
               {formik?.touched?.date && formik?.errors?.date && (
-                <p className="text-red-700 text-sm">{formik?.errors?.date}</p>
+                <p className="text-red-700 text-sm absolute left-0 mt-1">
+                  {formik?.errors?.date}
+                </p>
               )}
             </div>
+
             <div className="relative">
               <FaClock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
@@ -110,12 +113,14 @@ const CreateNotification = () => {
                 className="w-[220px] border rounded-xl p-2 pl-10 outline-none focus:ring-2 focus:ring-blue-400"
               />
               {formik?.touched?.time && formik?.errors?.time && (
-                <p className="text-red-700 text-sm">{formik?.errors?.time}</p>
+                <p className="text-red-700 text-sm absolute left-0 mt-1">
+                  {formik?.errors?.time}
+                </p>
               )}
             </div>
           </div>
 
-          <div className="mb-4">
+          <div className="mb-4 mt-8">
             <span className="text-gray-700">User Type-Based</span>
             <div className="flex gap-6 mt-2">
               <label className="flex items-center gap-2">

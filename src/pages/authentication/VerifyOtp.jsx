@@ -5,6 +5,8 @@ import { useVerifyOtp } from "../../hooks/api/Post";
 import AuthSubmitBtn from "../../components/authentication/AuthSubmitBtn";
 import { ErrorToast } from "../../components/global/Toaster";
 import { otpValues } from "../../init/authentication/dummyLoginValues";
+import { useResendOtp } from "../../hooks/api/Post";
+
 import Cookies from "js-cookie";
 
 import {
@@ -19,6 +21,8 @@ import { processOtp } from "../../lib/utils";
 const VerifyOtp = () => {
   const navigate = useNavigate();
   const { loading, verifyOtp } = useVerifyOtp();
+  const { loading: resendLoading, resendOtp } = useResendOtp();
+
   const [otp, setOtp] = useState(otpValues.otp);
 
   const [phone, setPhone] = useState("");
@@ -63,6 +67,16 @@ const VerifyOtp = () => {
     verifyOtp("/auth/otp/verify", false, null, requestData, processOtp);
   };
 
+  const handleResendOtp = async () => {
+    if (phone) {
+      await resendOtp("/auth/otp/resend", phone, () => {
+        console.log("OTP Resent to:", phone);
+      });
+    } else {
+      ErrorToast("Phone number is missing. Please try again.");
+    }
+  };
+
   return (
     <div className="w-screen h-screen flex items-start justify-start bg-gradient-to-b from-[#24638F] to-[#051724]">
       <form
@@ -101,8 +115,12 @@ const VerifyOtp = () => {
             <span className="text-[13px] font-medium text-[#C2C6CB]">
               Didn't receive a code?
             </span>
-            <button className="outline-none text-[13px] border-none text-[#5BAFEB] font-bold">
-              Resend now
+            <button
+              type="button"
+              onClick={handleResendOtp}
+              className="outline-none text-[13px] border-none text-[#5BAFEB] font-bold"
+            >
+              {resendLoading ? "Resending..." : "Resend now"}
             </button>
           </div>
         </div>
